@@ -11,7 +11,7 @@ function Layout({children}) {
         <div className='main-content '>
             {children}
         </div>
-        <Footer/>
+        <Footer/> 
     </div>
   )
 }
