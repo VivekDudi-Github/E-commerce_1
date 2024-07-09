@@ -1,7 +1,7 @@
 import React from 'react'
 
 function No_home() {
-  return (
+  return ( 
     <div>No_home</div>
   )
 }
