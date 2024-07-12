@@ -11,6 +11,9 @@ import All_products from './components/pages/all_product/All_products.jsx'
 import Sign_up from './components/pages/registeration/Sign_up.jsx'
 import Login from './components/pages/login/Login.jsx'
 import User_dashboard from './components/pages/user/User_dashboard.jsx'
+import Admin_dashboard from './components/pages/admin/Admin_dashboard.jsx'
+import Add_product_page from './components/pages/admin/Add_product_page.jsx'
+import Update_product_page from './components/pages/admin/Update_product_page.jsx'
 
 function App() {
 
@@ -28,7 +31,9 @@ function App() {
             <Route path='/sign_up' element={<Sign_up/>} />
             <Route path='/login' element={<Login/>} />
             <Route path='/user_dashboard' element={<User_dashboard/>} />
-
+            <Route path='/admin_dashboard' element={<Admin_dashboard/>} />
+            <Route path='/add_products' element={<Add_product_page/>} />
+            <Route path='/update_product' element={<Update_product_page/>} />
           </Routes>
         </BrowserRouter>
       </div>
