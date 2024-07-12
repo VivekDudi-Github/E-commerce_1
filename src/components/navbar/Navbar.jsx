@@ -22,7 +22,7 @@ const Navbar = () => {
 
             {/* User */}
             <li>
-                <Link to={'/login'}>Login</Link>
+                <Link to={'/user_dashboard'}>User</Link>
             </li>
 
             {/* Admin */}

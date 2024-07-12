@@ -10,6 +10,7 @@ import Cart from './components/pages/cart/Cart.jsx'
 import All_products from './components/pages/all_product/All_products.jsx'
 import Sign_up from './components/pages/registeration/Sign_up.jsx'
 import Login from './components/pages/login/Login.jsx'
+import User_dashboard from './components/pages/user/User_dashboard.jsx'
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
             <Route path='/all_products' element={<All_products/>} />
             <Route path='/sign_up' element={<Sign_up/>} />
             <Route path='/login' element={<Login/>} />
+            <Route path='/user_dashboard' element={<User_dashboard/>} />
 
           </Routes>
         </BrowserRouter>
