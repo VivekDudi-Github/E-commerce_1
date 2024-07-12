@@ -4,6 +4,7 @@ import Hero_Section from "../../hero/Hero_section"
 import Catagory from '../../catagory/Catagory'
 import HomePageProductCard from '../../ProductCard/Home_productCard'
 import Track from '../../track/Track'
+import Testimonial from '../../testimonial/Testimonial'
 
 
 function Home() {
@@ -13,6 +14,7 @@ function Home() {
       <Catagory/>
       <HomePageProductCard/>
       <Track/>
+      <Testimonial/>
     </Layout>
   )
 }

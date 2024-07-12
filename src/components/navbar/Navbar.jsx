@@ -12,17 +12,17 @@ const Navbar = () => {
 
             {/* All Product */}
             <li>
-                <Link to={'/allproduct'}>All Product</Link>
+                <Link to={'/all_products'}>All Product</Link>
             </li>
 
             {/* Signup */}
             <li>
-                <Link to={'/signup'}>Signup</Link>
+                <Link to={'/sign_up'}>Signup</Link>
             </li>
 
             {/* User */}
             <li>
-                <Link to={'/'}>Login</Link>
+                <Link to={'/login'}>Login</Link>
             </li>
 
             {/* Admin */}
@@ -44,7 +44,7 @@ const Navbar = () => {
         </ul>
     )
     return (
-        <nav className="bg-pink-600 sticky top-0">
+        <nav className="bg-pink-600 sticky top-0 z-50">
             {/* main  */}
             <div className="lg:flex lg:justify-between items-center py-3 lg:px-3 ">
                 {/* left  */}
