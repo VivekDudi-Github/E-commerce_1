@@ -5,7 +5,7 @@ import Catagory from '../../catagory/Catagory'
 import HomePageProductCard from '../../ProductCard/Home_productCard'
 import Track from '../../track/Track'
 import Testimonial from '../../testimonial/Testimonial'
-
+import Loader from '../../track/Loader'
 
 function Home() {
   return (
@@ -15,7 +15,9 @@ function Home() {
       <HomePageProductCard/>
       <Track/>
       <Testimonial/>
+      <Loader/>
     </Layout>
+    
   )
 }
 
