@@ -1,7 +1,39 @@
-
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import {useDispatch} from "react-redux"
+import { auth } from "../../../firebase/firebase";
+import Loader from "../../track/Loader";
+import {signInWithEmailAndPassword} from "firebase/auth"
 
 const Login = () => {
+    const navigate = useNavigate()
+    const [Loading , setLaoding] = useState(false) ;  
+
+    const [userData , setUserData] = useState ({
+        email : "" , 
+        password : "" , 
+    }) 
+
+    const login_handler = async () => {
+        if(userData.email && userData.password){
+            try { setLaoding(true)
+                await signInWithEmailAndPassword(auth , userData.email , userData.password)
+                    .then(()=> (alert("LoggedIn succesfully")  ,
+                                navigate("/") ,
+                                setLaoding(false) 
+                            ))
+
+            } catch (error) {
+                console.log(error , "error while logging in");
+            }
+        }else{
+            alert("Please fill all required fields")
+        }
+    
+        }
+
+
     return (
         <div className='flex justify-center items-center h-screen'>
             {/* Login Form  */}
@@ -19,6 +51,12 @@ const Login = () => {
                     <input
                         type="email"
                         placeholder='Email Address'
+                        onChange={(e)=> {
+                            setUserData({
+                                ...userData , 
+                                email : e.target.value
+                            })
+                        }}
                         className='bg-pink-50 border border-pink-200 px-2 py-2 w-96 rounded-md outline-none placeholder-pink-200'
                     />
                 </div>
@@ -28,6 +66,12 @@ const Login = () => {
                     <input
                         type="password"
                         placeholder='Password'
+                        onChange={(e)=> {
+                            setUserData({
+                                ...userData , 
+                                password : e.target.value
+                            })
+                        }}
                         className='bg-pink-50 border border-pink-200 px-2 py-2 w-96 rounded-md outline-none placeholder-pink-200'
                     />
                 </div>
@@ -36,6 +80,7 @@ const Login = () => {
                 <div className="mb-5">
                     <button
                         type='button'
+                        onClick={()=> login_handler()}
                         className='bg-pink-500 hover:bg-pink-600 w-full text-white text-center py-2 font-bold rounded-md '
                     >
                         Login
@@ -45,8 +90,8 @@ const Login = () => {
                 <div>
                     <h2 className='text-black'>Don't Have an account <Link className=' text-pink-500 font-bold' to={'/sign_up'}>Signup</Link></h2>
                 </div>
-
             </div>
+            {Loading && <Loader/>}
         </div>
     );
 }

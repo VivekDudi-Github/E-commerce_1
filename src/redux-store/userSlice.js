@@ -2,24 +2,16 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     loggedIn: false , 
-    Isloading : false ,
 }
 
 const authSlice = createSlice({
-    name : user  , 
+    name : 'user'  , 
     initialState , 
     reducers : {
         loggingIn : (state)=> {
             state.loggedIn = true ;
         } , 
         
-        loadingTrue : (state) => {
-            state.Isloading = true ;
-        } ,
-        loadingFalse : (state) => {
-            state.Isloading = false ;
-        } ,
-    
     }
 })
 

@@ -14,9 +14,13 @@ import User_dashboard from './components/pages/user/User_dashboard.jsx'
 import Admin_dashboard from './components/pages/admin/Admin_dashboard.jsx'
 import Add_product_page from './components/pages/admin/Add_product_page.jsx'
 import Update_product_page from './components/pages/admin/Update_product_page.jsx'
+import Loader from './components/track/Loader.jsx'
+
+import {useSelector} from "react-redux"
+
 
 function App() {
-
+ 
   return (
     <>
       <div>

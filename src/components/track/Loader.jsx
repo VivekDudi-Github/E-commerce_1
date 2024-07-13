@@ -1,6 +1,10 @@
+
+import {useState} from "react"
+import {useSelector} from "react-redux"
+
 const Loader = () => {
-    return (
-        <div role="status" className=" absolute">
+{return  (
+        <div role="status" className=" fixed top-[50%] left-[50%] ">
             <svg
                 aria-hidden="true"
                 className="w-8 h-8 mr-2 text-pink-200 animate-spin fill-pink-500"
@@ -19,7 +23,7 @@ const Loader = () => {
             </svg>
             <span className="sr-only">Loading...</span>
         </div>
-    );
+    ) }
 }
 
 export default Loader;
