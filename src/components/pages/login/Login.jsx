@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import {useDispatch} from "react-redux"
-import { auth } from "../../../firebase/firebase";
+import { auth, DB } from "../../../firebase/firebase";
 import Loader from "../../track/Loader";
 import {signInWithEmailAndPassword} from "firebase/auth"
+import { doc, onSnapshot, query, QuerySnapshot, where , collection } from "firebase/firestore";
 
 const Login = () => {
     const navigate = useNavigate()
@@ -18,11 +19,19 @@ const Login = () => {
     const login_handler = async () => {
         if(userData.email && userData.password){
             try { setLaoding(true)
-                await signInWithEmailAndPassword(auth , userData.email , userData.password)
-                    .then(()=> (alert("LoggedIn succesfully")  ,
-                                navigate("/") ,
-                                setLaoding(false) 
-                            ))
+                const users = await signInWithEmailAndPassword(auth , userData.email , userData.password)
+                    if(users){
+                        setLaoding(false)
+                        alert("Loggedin Successfully")
+                        navigate("/")
+                        setUserData({
+                            email: "" , 
+                            password : "" , 
+                        })                        
+                    }else{
+                        setLaoding(false)
+                        console.log("users didn't make");
+                    }
 
             } catch (error) {
                 console.log(error , "error while logging in");

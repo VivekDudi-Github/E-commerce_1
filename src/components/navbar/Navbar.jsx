@@ -1,7 +1,57 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Search_Bar from "./Search_Bar";
+import {auth, DB} from "../../firebase/firebase"
+import { signOut , onAuthStateChanged } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { collection, onSnapshot, query, QuerySnapshot, where } from "firebase/firestore";
 
 const Navbar = () => {
+const navigate = useNavigate() ;
+const [authStatus , setAuthStatus] = useState(false)
+
+
+//checking authstatus
+    onAuthStateChanged( auth , (user) => {
+        if(user){
+            setAuthStatus(true)
+        }else{
+            setAuthStatus(false)
+        }      
+    })
+
+
+//check admin status    
+    try {
+        if(authStatus){
+        const q = query(
+            collection(DB , "user") , where("userId" , "==" , auth?.currentUser?.uid)
+        ) ;
+        const data = onSnapshot(q , (QuerySnapshot) => {
+            let userdata ;
+            QuerySnapshot.forEach((doc) => userdata = doc.get("role") )
+            console.log("retrieved role")
+        })
+    }else {
+        console.log("waiting for authstatus");
+    }
+    } catch (error) {
+        console.log(error);
+    }
+
+
+//
+    const handle_signOut = async() => {
+        try {
+            await signOut(auth)
+            console.log("logged out");
+            navigate("/login")
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     // navList Data
     const navList = (
         <ul className="flex space-x-3 text-white font-medium text-md px-5 ">
@@ -40,6 +90,13 @@ const Navbar = () => {
                 <Link to={'/cart'}>
                     Cart(0)
                 </Link>
+            </li>
+            <li>
+                <span onClick={()=> handle_signOut()}
+                    className="hover:cursor-pointer"
+                    >
+                    Signout
+                </span>
             </li>
         </ul>
     )
