@@ -1,7 +1,5 @@
 import Navbar from "../navbar/Navbar"
 import Footer from "../footer/Footer"
-
-
 import React from 'react'
 
 function Layout({children}) { 

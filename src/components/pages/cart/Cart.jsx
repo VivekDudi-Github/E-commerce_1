@@ -1,6 +1,12 @@
+import { useSelector } from "react-redux"
 import Layout from "../../layout/Layout"
 import { Trash } from 'lucide-react'
+import { useEffect, useState } from "react"
 
+const CartPage = () => {
+    const user = useSelector((state) => state.user.userData.name)
+    console.log(user);
+    
 const products = [
     {
         id: 1,
@@ -40,8 +46,6 @@ const products = [
     } 
 ]
 
-
-const CartPage = () => {
     return (
         <Layout>
             <div className="container mx-auto px-4 max-w-7xl lg:px-0">

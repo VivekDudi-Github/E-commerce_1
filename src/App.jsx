@@ -2,6 +2,11 @@ import { useState } from 'react'
 import './App.css'
 import { Button } from '@material-tailwind/react' 
 import {   BrowserRouter ,  Routes , Route} from "react-router-dom"
+import Loader from './components/track/Loader.jsx'
+import {useSelector} from "react-redux"
+
+
+//Components imports
 import Home from './components/pages/home/Home.jsx'
 import No_home from './components/pages/no home/No_home'
 import Product_info from './components/pages/product_info/Product_info'
@@ -14,9 +19,8 @@ import User_dashboard from './components/pages/user/User_dashboard.jsx'
 import Admin_dashboard from './components/pages/admin/Admin_dashboard.jsx'
 import Add_product_page from './components/pages/admin/Add_product_page.jsx'
 import Update_product_page from './components/pages/admin/Update_product_page.jsx'
-import Loader from './components/track/Loader.jsx'
-
-import {useSelector} from "react-redux"
+import User_procted_route from './protected_route/User_proctected_route.jsx'
+import Admin_protected_route from './protected_route/Admin_procted_route.jsx'
 
 
 function App() {
@@ -34,10 +38,29 @@ function App() {
             <Route path='/all_products' element={<All_products/>} />
             <Route path='/sign_up' element={<Sign_up/>} />
             <Route path='/login' element={<Login/>} />
-            <Route path='/user_dashboard' element={<User_dashboard/>} />
-            <Route path='/admin_dashboard' element={<Admin_dashboard/>} />
-            <Route path='/add_products' element={<Add_product_page/>} />
-            <Route path='/update_product' element={<Update_product_page/>} />
+         
+            <Route path='/user_dashboard' element={
+                      // <User_procted_route>
+                          <User_dashboard/>
+                      // </User_procted_route>
+                    }  />
+         
+            <Route path='/admin_dashboard' element={
+                      <Admin_protected_route>
+                          <Admin_dashboard/>
+                      </Admin_protected_route>} />
+         
+            <Route path='/add_products' element={
+                      <Admin_protected_route>
+                        <Add_product_page/>
+                      </Admin_protected_route> } />
+                     
+         
+            <Route path='/update_product' element={
+                      <Admin_protected_route>
+                        <Update_product_page />
+                      </Admin_protected_route>} />
+          
           </Routes>
         </BrowserRouter>
       </div>

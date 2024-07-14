@@ -1,5 +1,11 @@
 import Layout from "../../layout/Layout";
+import {useSelector} from "react-redux"
 
+const UserDashboard = () => {
+    const userData = useSelector(state => state.user.userData)
+    console.log(userData);
+
+    
 const products = [
     {
         id: 1,
@@ -14,7 +20,6 @@ const products = [
     },
 ]
 
-const UserDashboard = () => {
     return (
         <Layout>
             <div className=" container mx-auto px-4 py-5 lg:py-8">
@@ -28,8 +33,8 @@ const UserDashboard = () => {
                         </div>
                         {/* text  */}
                         <div className="">
-                            <h1 className=" text-center text-lg"><span className=" font-bold">Name :</span> ABC</h1>
-                            <h1 className=" text-center text-lg"><span className=" font-bold">Email :</span> test@gmail.com</h1>
+                            <h1 className=" text-center text-lg"><span className=" font-bold">Name :</span> {userData.name}</h1>
+                            <h1 className=" text-center text-lg"><span className=" font-bold">Email :</span> {userData.email}</h1>
                         </div>
                     </div>
                 </div>

@@ -34,12 +34,13 @@ const Login = () => {
                     }
 
             } catch (error) {
+                setLaoding(false)
+                alert("invalid credentials")
                 console.log(error , "error while logging in");
             }
         }else{
             alert("Please fill all required fields")
         }
-    
         }
 
 

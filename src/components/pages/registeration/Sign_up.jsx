@@ -29,6 +29,7 @@ const handle_Signup  = async () => {
             if(userCredentail){
                 console.log("userCredentail" , userCredentail);
                 const user = {
+                    name : UserData.name , 
                     userId: userCredentail.user.uid , 
                     email : userCredentail.user.email ,
                     role : UserData.role , 
