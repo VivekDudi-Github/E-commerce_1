@@ -40,9 +40,9 @@ function App() {
             <Route path='/login' element={<Login/>} />
          
             <Route path='/user_dashboard' element={
-                      // <User_procted_route>
+                      <User_procted_route>
                           <User_dashboard/>
-                      // </User_procted_route>
+                      </User_procted_route>
                     }  />
          
             <Route path='/admin_dashboard' element={
@@ -53,7 +53,8 @@ function App() {
             <Route path='/add_products' element={
                       <Admin_protected_route>
                         <Add_product_page/>
-                      </Admin_protected_route> } />
+                      </Admin_protected_route>  
+                    } />
                      
          
             <Route path='/update_product' element={

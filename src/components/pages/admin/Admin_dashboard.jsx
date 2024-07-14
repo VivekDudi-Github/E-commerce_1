@@ -3,8 +3,12 @@ import {Tab ,TabList,TabPanel,Tabs} from "react-tabs"
 import ProductDetail from "../../admin/Product_detail";
 import OrderDetail from "../../admin/Order_Detail";
 import User_detail from "../../admin/User_detail";
+import {useSelector} from "react-redux"
 
 const AdminDashboard = () => {
+    const adminData  = useSelector (state => state.user.userData)
+
+
     return (
         <div>
             {/* Top */}
@@ -25,8 +29,8 @@ const AdminDashboard = () => {
                         </div>
                         {/* text  */}
                         <div className="">
-                            <h1 className=" text-center text-lg text-pink-500"><span className=" font-bold">Name :</span> ABC</h1>
-                            <h1 className=" text-center text-lg text-pink-500"><span className=" font-bold">Email :</span> test@gmail.com</h1>
+                            <h1 className=" text-center text-lg text-pink-500"><span className=" font-bold">Name :</span> {adminData.name}</h1>
+                            <h1 className=" text-center text-lg text-pink-500"><span className=" font-bold">Email :</span> {adminData.email}</h1>
                         </div>
                     </div>
                 </div>
