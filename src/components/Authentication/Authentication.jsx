@@ -1,11 +1,13 @@
 //for checking authstatus and updating userdata
-
-import { auth } from "../../firebase/firebase";
+import {useState , useEffect} from "react"
+import { auth , DB } from "../../firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import {useSelector , useDispatch} from "react-redux"
-import { loggingIn, logginOut } from "../../redux-store/userSlice";
+import {where , query , onSnapshot , collection} from "firebase/firestore"
 
-export default function check_auth (){
+import {  useDispatch} from "react-redux"
+import { loggingIn, logginOut , add_role , addUserdata } from "../../redux-store/userSlice";
+
+export default function Check_auth (){
     const dispatch = useDispatch() ;
     const [authStatus , setAuthStatus] = useState(false)
     const [adminstatus , setAdminStatus] = useState(false)
@@ -16,7 +18,6 @@ export default function check_auth (){
         if (user) {
             console.log(user);
           setAuthStatus(true);
-          console.log("authstatus");
           dispatch(loggingIn());
         } else {
           setAuthStatus(false);

@@ -7,6 +7,7 @@ import {useSelector} from "react-redux"
 
 
 //Components imports
+import Check_auth from './components/Authentication/Authentication.jsx'
 import Home from './components/pages/home/Home.jsx'
 import No_home from './components/pages/no home/No_home'
 import Product_info from './components/pages/product_info/Product_info'
@@ -28,6 +29,7 @@ function App() {
   return (
     <>
       <div>
+        <Check_auth/>
         <BrowserRouter>
         <Scroll_Top/>
           <Routes>
@@ -51,9 +53,9 @@ function App() {
                       </Admin_protected_route>} />
          
             <Route path='/add_products' element={
-                      // <Admin_protected_route>
+                      <Admin_protected_route>
                         <Add_product_page/>
-                      // </Admin_protected_route>  
+                      </Admin_protected_route>  
                     } />
                      
          

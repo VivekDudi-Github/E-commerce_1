@@ -4,7 +4,6 @@ import {useSelector } from "react-redux"
 function Admin_protected_route({children}) {
 const role = useSelector(state => state.user.role)
 
-  console.log(role);
   if(role == "admin"){
     return children
       

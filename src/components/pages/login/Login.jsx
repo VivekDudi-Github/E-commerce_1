@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import {useDispatch} from "react-redux"
+import {useDispatch, useSelector} from "react-redux"
 import { auth, DB } from "../../../firebase/firebase";
 import Loader from "../../track/Loader";
 import {signInWithEmailAndPassword} from "firebase/auth"
@@ -42,6 +42,14 @@ const Login = () => {
             alert("Please fill all required fields")
         }
         }
+
+//automatic redirecting if already user--        
+        const authstatus = useSelector(state => state.user.IsLoggedIN)
+        useEffect(() => {
+            if(authstatus){
+                navigate("/")
+            }
+        }, [authstatus])
 
 
     return (

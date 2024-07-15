@@ -2,11 +2,8 @@ import { useEffect } from "react";
 import { Link , NavLink , useNavigate } from "react-router-dom";
 import Search_Bar from "./Search_Bar";
 
-
-import {auth, DB} from "../../firebase/firebase"
-import { signOut , onAuthStateChanged } from "firebase/auth";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
-
+import {auth } from "../../firebase/firebase"
+import { signOut  } from "firebase/auth";
 import { useState } from "react";
 import {useDispatch, useSelector} from "react-redux"
 import {loggingIn , logginOut ,add_role , addUserdata } from "../../redux-store/userSlice"
@@ -16,55 +13,16 @@ const Navbar = () => {
 const navigate = useNavigate() ;
 const dispatch = useDispatch() ;
 
+const auththentication = useSelector(state => state.user.IsLoggedIN)
+const AdminAuthenitcation = useSelector(state => state.user.role)
 
-const [authStatus , setAuthStatus] = useState(false)
-const [adminstatus , setAdminStatus] = useState(false)
+const [authStatus , setAuthStatus] = useState(auththentication)
+const [adminstatus , setAdminStatus] = useState("")
 
-//checking authstatus
 useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, (user) => {
-    if (user) {
-        console.log(user);
-      setAuthStatus(true);
-      console.log("authstatus");
-      dispatch(loggingIn());
-    } else {
-      setAuthStatus(false);
-      dispatch(logginOut());
-    }
-  });
-
-  return () => unsubscribe(); 
-}, []) 
-
-
-//check admin status and updating userdata 
-   useEffect (() => {
-    try {
-        if(authStatus){
-        const q = query(
-            collection(DB , "user") , where("userId" , "==" , auth?.currentUser?.uid)
-        ) ;
-         onSnapshot(q , (QuerySnapshot) => {
-            let userdata ;
-            QuerySnapshot.forEach((doc) => userdata = doc.data() )
-            if(userdata) {
-                dispatch(add_role(userdata.role)) ;
-                dispatch(addUserdata({ 
-                    email : userdata.email , 
-                    date : userdata.date ,
-                    name : userdata.name , 
-                 })) ;
-            }
-            if(userdata.role == "admin"){
-                setAdminStatus(true)
-            }
-        })
-    }
-    } catch (error) {
-        console.log(error);
-    }
-   } , [authStatus])
+    setAdminStatus(AdminAuthenitcation);
+    setAuthStatus(auththentication) ;
+  }, [AdminAuthenitcation ,auththentication ]);
 
 
 //signOut function
@@ -105,12 +63,12 @@ useEffect(() => {
             </li> }
 
             {/* User */}
-            { authStatus && !adminstatus && <li>
+            { authStatus && adminstatus !== "admin"  && <li>
                 <Link to={'/user_dashboard'} >User</Link>
             </li>}
 
             {/* Admin */}
-           { authStatus && adminstatus && <li>
+           { authStatus && adminstatus == "admin" && <li>
                 <Link to={'/admin_dashboard'} >Admin</Link>
             </li>}
 
