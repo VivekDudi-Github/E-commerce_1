@@ -24,7 +24,7 @@ import Admin_protected_route from './protected_route/Admin_procted_route.jsx'
 
 
 function App() {
- 
+ console.log("new reload");
   return (
     <>
       <div>
@@ -51,9 +51,9 @@ function App() {
                       </Admin_protected_route>} />
          
             <Route path='/add_products' element={
-                      <Admin_protected_route>
+                      // <Admin_protected_route>
                         <Add_product_page/>
-                      </Admin_protected_route>  
+                      // </Admin_protected_route>  
                     } />
                      
          

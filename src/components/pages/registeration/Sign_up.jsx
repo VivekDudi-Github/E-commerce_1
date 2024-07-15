@@ -27,7 +27,6 @@ const handle_Signup  = async () => {
     const userCredentail = await createUserWithEmailAndPassword(auth , UserData.email , UserData.password)
        
             if(userCredentail){
-                console.log("userCredentail" , userCredentail);
                 const user = {
                     name : UserData.name , 
                     userId: userCredentail.user.uid , 
@@ -45,7 +44,7 @@ const handle_Signup  = async () => {
                 }
                 const userRefrence = collection(DB , "user")
                 
-                addDoc(userRefrence , user)
+                await addDoc(userRefrence , user)
 
                 setuserData ({
                     name: ""  , 

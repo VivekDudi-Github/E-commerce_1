@@ -24,6 +24,7 @@ const [adminstatus , setAdminStatus] = useState(false)
 useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, (user) => {
     if (user) {
+        console.log(user);
       setAuthStatus(true);
       console.log("authstatus");
       dispatch(loggingIn());

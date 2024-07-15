@@ -51,21 +51,24 @@ const AddProductPage = () => {
         )
   });
 
-  const add_product_handle = async() => {
 
-try {
-        setLoading(true)
-        const collection_ref = collection(DB , "product")
-        const doc_ref = await addDoc(collection_ref , ProductDetail)
-        alert("Product added Successfully")
-        navigate("/admin_dashboard")
-    
-}catch (error) {
-      setLoading(false)
-      console.log(error , "error while adding Product")
-      alert("error while adding product")
-}
-}
+async function add_product_handle(event) {
+    event.preventDefault();
+    setLoading(true) ;
+        
+    try {
+      const productRef = collection(DB, 'products');
+      await addDoc(productRef, ProductDetail);
+      
+      alert("Product Added")
+      setLoading(false) ;
+      navigate("/admin_dashboard") ;
+     
+    } catch (e) {
+        setLoading(false) ;
+      console.error("Error adding document: ", e);
+    }
+  }
 
   return (
       <div>
@@ -80,8 +83,8 @@ try {
                       </h2>
                   </div>
 
-                  {/* Form */}
-              <form onSubmit={add_product_handle}>
+              {/* Form */}
+              <form onSubmit={ add_product_handle}>
                   
                   {/* Input One */}
                   <div className="mb-3">
@@ -165,8 +168,10 @@ try {
 
               </div>
           </div>
+          {Loading && <Loader/>}
       </div>
   );
 }
 
 export default AddProductPage;
+
