@@ -63,7 +63,7 @@ useEffect(() => {
             </li> }
 
             {/* User */}
-            { authStatus && adminstatus !== "admin"  && <li>
+            { authStatus && adminstatus == "user"  && <li>
                 <Link to={'/user_dashboard'} >User</Link>
             </li>}
 

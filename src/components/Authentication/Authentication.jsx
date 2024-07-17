@@ -16,7 +16,6 @@ export default function Check_auth (){
     useEffect(() => {
       const unsubscribe = onAuthStateChanged(auth, (user) => {
         if (user) {
-            console.log(user);
           setAuthStatus(true);
           dispatch(loggingIn());
         } else {

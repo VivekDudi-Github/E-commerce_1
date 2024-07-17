@@ -5,7 +5,7 @@ import productSlice from "./productSlice";
 const store = configureStore({
     reducer : {
         user : userSlice ,
-        productlist : productSlice ,
-    }
+        productlist : productSlice.reducer ,
+    } 
 })
 export default store ;

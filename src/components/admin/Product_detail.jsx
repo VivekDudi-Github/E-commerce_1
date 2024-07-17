@@ -1,17 +1,31 @@
 import { NavLink } from "react-router-dom";
 import { useSelector , useDispatch } from "react-redux";
-import { query , onSnapshot  , collection, orderBy, QuerySnapshot } from "firebase/firestore"
+import { query , onSnapshot  , collection, orderBy } from "firebase/firestore"
 import { DB } from "../../firebase/firebase";
 import Loader from "../track/Loader";
-import { pushProducts ,removeProducts } from "../../redux-store/productSlice";
+import { add_adminProducts , removeAdminProducts } from "../../redux-store/productSlice";
 import { useEffect, useState } from "react";
 
 const ProductDetail = () => {
-      const dispatch = useDispatch()
-      const [ProductList , setProductList] = useState([])
-        console.log(ProductList);
+const dispatch = useDispatch()
+const [ProductList , setProductList] = useState([])
 
-    const getProduct = () => {
+const adminProd = useSelector(state => state.productlist.adminProductsList) ;
+console.log(adminProd);
+console.log(ProductList);
+
+useEffect(() => {
+    if (adminProd) {
+        setProductList(adminProd) ;
+        console.log(ProductList);
+    }
+} , [adminProd])
+
+    
+const auththentication = useSelector(state => state.user)
+console.log(auththentication);
+
+     const getProduct = () => {
         const collectionRef = collection (DB , "products")
         const q = query(collectionRef ,orderBy("time" ,"desc") )
     
@@ -19,9 +33,9 @@ const ProductDetail = () => {
             onSnapshot(q ,(QuerySnapshot)=> {
                 let productArray = [] ; 
                 QuerySnapshot.forEach((pro)=>{
-                    productArray.push({...pro.data() , id: pro.id})
-                    console.log("query-got");
+                    productArray.push({...pro.data() , id: pro.id}) ;
                     setProductList(productArray) ;
+                    dispatch(add_adminProducts(productArray))
                 }
             )
             })
@@ -62,8 +76,8 @@ const ProductDetail = () => {
                             <th scope="col" className="h-12 px-6 text-md font-bold fontPara border-l first:border-l-0 border-pink-100 text-slate-700 bg-slate-100">Action</th>
                         </tr>
                        
-                        { ProductList.map(( { id, title, price, category, date, image_url } , index  ) =>{
-                            console.log(index);
+                        {  ProductList?.map(( { id, title, price, category, date, image_url } , index  ) =>{
+                            console.log( { id, title, price, category, date, image_url });
                         return (
                         <tr className="text-pink-300" key={id}>   
                            <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
@@ -89,21 +103,6 @@ const ProductDetail = () => {
                            </td>
                         </tr>)
                         })}
-                           
-                           
-                           
-                            {/* <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
-                                1.
-                            </td>
-                            <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
-                                {'name'}
-                            </td>
-                            <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 text-green-500 cursor-pointer ">
-                                Edit
-                            </td> 
-                            <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 text-red-500 cursor-pointer ">
-                                Delete
-                            </td> */}
                     </tbody>
                 </table>
             </div>
