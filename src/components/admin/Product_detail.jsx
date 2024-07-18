@@ -8,47 +8,64 @@ import { useEffect, useState } from "react";
 
 const ProductDetail = () => {
 const dispatch = useDispatch()
+
+
 const [ProductList , setProductList] = useState([])
 
-const adminProd = useSelector(state => state.productlist.adminProductsList) ;
-console.log(adminProd);
-console.log(ProductList);
+ //fetching the list from firestore
+ const getProduct = () => {
+    const collectionRef = collection (DB , "products")
+    const q = query(collectionRef ,orderBy("time") )
 
+    try {
+        onSnapshot(q ,(QuerySnapshot)=> {
+            dispatch(removeAdminProducts())
+            QuerySnapshot.forEach((pro)=>{
+                dispatch(add_adminProducts({...pro.data()  , time : newTime(pro.data().time) , id: pro.id})) ;
+            }
+        ) 
+        } , 
+    )
+    } catch (error) {
+        console.log(error);
+        alert("error while fetching the products ")
+    }
+}
+
+
+//function for making timestamp serializable
+const newTime = (timestamp) => {
+    let milliseconds ;
+    if(  timestamp){
+    milliseconds = timestamp.seconds * 1000  + timestamp.nanoseconds / 1000000 ; 
+    const full_date  =  new Date(milliseconds) ;
+    const date = `${full_date.getDate()}-${full_date.getMonth() + 1}-${full_date.getFullYear()}`
+    return(date) ;
+    } else {
+        console.log("wrong date and time name") ;
+        return ("unknown error or not available") ;
+    }
+ }
+
+
+//intializing  from the store 
+useEffect(()=> {
+getProduct() ;
+} , [])
+
+
+//getting the list store
+const adminProd = useSelector(state => state.productlist.adminProductsList) ;
 useEffect(() => {
     if (adminProd) {
         setProductList(adminProd) ;
-        console.log(ProductList);
+        console.log(adminProd);
     }
 } , [adminProd])
 
+
+
     
-const auththentication = useSelector(state => state.user)
-console.log(auththentication);
-
-     const getProduct = () => {
-        const collectionRef = collection (DB , "products")
-        const q = query(collectionRef ,orderBy("time" ,"desc") )
-    
-        try {
-            onSnapshot(q ,(QuerySnapshot)=> {
-                let productArray = [] ; 
-                QuerySnapshot.forEach((pro)=>{
-                    productArray.push({...pro.data() , id: pro.id}) ;
-                    setProductList(productArray) ;
-                    dispatch(add_adminProducts(productArray))
-                }
-            )
-            })
-        } catch (error) {
-            console.log(error);
-            alert("error while fetching the products ")
-        }
-    }
-
-    useEffect(()=> {
-        getProduct() ;
-    } , [])
-
     return (
         <div>
             {/* <Loader/> */}
@@ -76,7 +93,7 @@ console.log(auththentication);
                             <th scope="col" className="h-12 px-6 text-md font-bold fontPara border-l first:border-l-0 border-pink-100 text-slate-700 bg-slate-100">Action</th>
                         </tr>
                        
-                        {  ProductList?.map(( { id, title, price, category, date, image_url } , index  ) =>{
+                        { ProductList?  ProductList?.map(( { id, title, price, category, date, image_url } , index  ) =>{
                             console.log( { id, title, price, category, date, image_url });
                         return (
                         <tr className="text-pink-300" key={id}>   
@@ -96,13 +113,15 @@ console.log(auththentication);
                              {category}
                            </td><td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
                              {date.slice( 0 , 14 )}
+                           </td><td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500  ">
+                             <NavLink className='text-blue-500 font-bold p-2 bg-pink-50 rounded-lg active:bg-pink-300 active: hover:bg-pink-200 hover:text-blue-50 duration-300' to={"/update_post"}>Edit</NavLink>
+
                            </td><td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
-                             edit
-                           </td><td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
-                             Delete
+                           <NavLink className='text-red-500 font-bold p-2 bg-pink-50 rounded-lg active:bg-pink-300 active: hover:bg-pink-200 hover:text-blue-50 duration-300' to={"/update_post"}>Delete</NavLink>
                            </td>
                         </tr>)
-                        })}
+                        }) 
+                    : <h1> Updating</h1>}
                     </tbody>
                 </table>
             </div>
