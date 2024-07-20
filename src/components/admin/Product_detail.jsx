@@ -59,11 +59,8 @@ const adminProd = useSelector(state => state.productlist.adminProductsList) ;
 useEffect(() => {
     if (adminProd) {
         setProductList(adminProd) ;
-        console.log(adminProd);
     }
 } , [adminProd])
-
-
 
     
     return (
@@ -94,7 +91,6 @@ useEffect(() => {
                         </tr>
                        
                         { ProductList?  ProductList?.map(( { id, title, price, category, date, image_url } , index  ) =>{
-                            console.log( { id, title, price, category, date, image_url });
                         return (
                         <tr className="text-pink-300" key={id}>   
                            <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
@@ -114,7 +110,7 @@ useEffect(() => {
                            </td><td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
                              {date.slice( 0 , 14 )}
                            </td><td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500  ">
-                             <NavLink className='text-blue-500 font-bold p-2 bg-pink-50 rounded-lg active:bg-pink-300 active: hover:bg-pink-200 hover:text-blue-50 duration-300' to={"/update_post"}>Edit</NavLink>
+                             <NavLink className='text-blue-500 font-bold p-2 bg-pink-50 rounded-lg active:bg-pink-300 active: hover:bg-pink-200 hover:text-blue-50 duration-300' to={`/update_product/${id}`}>Edit</NavLink>
 
                            </td><td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
                            <NavLink className='text-red-500 font-bold p-2 bg-pink-50 rounded-lg active:bg-pink-300 active: hover:bg-pink-200 hover:text-blue-50 duration-300' to={"/update_post"}>Delete</NavLink>
