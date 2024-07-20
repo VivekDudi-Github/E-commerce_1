@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useSelector , useDispatch } from "react-redux";
-import { query , onSnapshot  , collection, orderBy } from "firebase/firestore"
+import { query , onSnapshot  , collection, orderBy , deleteDoc ,doc } from "firebase/firestore"
 import { DB } from "../../firebase/firebase";
 import Loader from "../track/Loader";
 import { add_adminProducts , removeAdminProducts } from "../../redux-store/productSlice";
@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 const ProductDetail = () => {
 const dispatch = useDispatch()
-
+const [loading , setLoading] = useState(false)
 
 const [ProductList , setProductList] = useState([])
 
@@ -62,16 +62,29 @@ useEffect(() => {
     }
 } , [adminProd])
 
+
+//Delete function
+const handleDelete = async(id)=> {
+   try {
+    setLoading(true)
+     await deleteDoc(doc(DB , "products" , id ) )
+     setLoading(false)
+   } catch (error) {
+    setLoading(false)
+    alert("error while deleting the doc")
+    console.log("error while deleting the doc" , error);
+   }
+}
     
     return (
         <div>
-            {/* <Loader/> */}
+            {loading && <Loader/>}
             <div className="py-5 flex justify-between items-center">
                 {/* text  */}
                 <h1 className=" text-xl text-pink-300 font-bold">All Product</h1>
                 {/* Add Product Button  */}
                 <NavLink to='/add_products'>
-                    <button className="px-5 py-2 bg-pink-50 border border-pink-100 rounded-lg active:bg-pink-300 duration-500">Add Product</button>
+                    <button className="px-5 py-2 font-semibold text-red-400 bg-pink-50 border border-pink-100 rounded-lg active:bg-pink-300 hover:bg-pink-400 hover:text-red-50 duration-500">Add Product</button>
                 </NavLink>
             </div>
 
@@ -90,7 +103,7 @@ useEffect(() => {
                             <th scope="col" className="h-12 px-6 text-md font-bold fontPara border-l first:border-l-0 border-pink-100 text-slate-700 bg-slate-100">Action</th>
                         </tr>
                        
-                        { ProductList?  ProductList?.map(( { id, title, price, category, date, image_url } , index  ) =>{
+                        { ProductList?  ProductList?.map(( { id, title, price, catagory, date, image_url } , index  ) =>{
                         return (
                         <tr className="text-pink-300" key={id}>   
                            <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
@@ -106,14 +119,15 @@ useEffect(() => {
                            </td><td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
                              {price}.
                            </td><td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
-                             {category}
+                             {catagory}
                            </td><td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
                              {date.slice( 0 , 14 )}
                            </td><td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500  ">
-                             <NavLink className='text-blue-500 font-bold p-2 bg-pink-50 rounded-lg active:bg-pink-300 active: hover:bg-pink-200 hover:text-blue-50 duration-300' to={`/update_product/${id}`}>Edit</NavLink>
+                             <NavLink className='text-blue-500 font-bold p-2 bg-pink-50 rounded-lg active:bg-pink-300 active: hover:bg-pink-400 hover:text-blue-50 duration-300' to={`/update_product/${id}`}>Edit</NavLink>
 
                            </td><td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
-                           <NavLink className='text-red-500 font-bold p-2 bg-pink-50 rounded-lg active:bg-pink-300 active: hover:bg-pink-200 hover:text-blue-50 duration-300' to={"/update_post"}>Delete</NavLink>
+                           <span className='text-red-500 font-bold p-2 bg-pink-50 rounded-lg active:bg-pink-300 active: hover:bg-pink-400 hover:text-blue-50 duration-300'
+                           onClick={()=> handleDelete(id)} >Delete</span>
                            </td>
                         </tr>)
                         }) 

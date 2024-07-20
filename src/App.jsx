@@ -58,7 +58,7 @@ function App() {
                       </Admin_protected_route>  
                     } />
          
-            <Route path='/update_product' element={
+            <Route path='/update_product/:id' element={
                       // <Admin_protected_route>
                         <Update_product_page />
                       //</Admin_protected_route> 
