@@ -1,6 +1,6 @@
 import {Timestamp , addDoc , collection } from "firebase/firestore"
 import {useState} from "react"
-import { DB } from "../../../firebase/firebase"
+import { auth, DB } from "../../../firebase/firebase"
 import Loader from "../../track/Loader"
 import { useNavigate } from "react-router-dom"
 
@@ -33,7 +33,8 @@ const categoryList = [
 const AddProductPage = () => {
   const navigate = useNavigate()
   const [Loading , setLoading] = useState(false)
-  
+  const adminId = auth?.currentUser?.uid 
+
   const [ProductDetail , setProductDetail] = useState({
         title : "" , 
         price : "" , 
@@ -41,6 +42,7 @@ const AddProductPage = () => {
         catagory : "" , 
         description : "" ,
         time : Timestamp.now() ,
+        adminId: adminId ,
         date : new Date().toString(
           "en-US" ,
           {
@@ -52,6 +54,7 @@ const AddProductPage = () => {
   });
 
 
+//adding product function
 async function add_product_handle(event) {
     event.preventDefault();
     setLoading(true) ;

@@ -1,4 +1,3 @@
-
 import {Tab ,TabList,TabPanel,Tabs} from "react-tabs"
 import ProductDetail from "../../admin/Product_detail";
 import OrderDetail from "../../admin/Order_Detail";

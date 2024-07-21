@@ -1,36 +1,12 @@
 import { NavLink } from "react-router-dom";
 import { useSelector , useDispatch } from "react-redux";
-import { query , onSnapshot  , collection, orderBy , deleteDoc ,doc } from "firebase/firestore"
-import { DB } from "../../firebase/firebase";
+import { query , onSnapshot  , collection, orderBy , deleteDoc ,doc, where } from "firebase/firestore"
+import { auth, DB } from "../../firebase/firebase";
 import Loader from "../track/Loader";
 import { add_adminProducts , removeAdminProducts } from "../../redux-store/productSlice";
 import { useEffect, useState } from "react";
 
-const ProductDetail = () => {
-const dispatch = useDispatch()
-const [loading , setLoading] = useState(false)
 
-const [ProductList , setProductList] = useState([])
-
- //fetching the list from firestore
- const getProduct = () => {
-    const collectionRef = collection (DB , "products")
-    const q = query(collectionRef ,orderBy("time") )
-
-    try {
-        onSnapshot(q ,(QuerySnapshot)=> {
-            dispatch(removeAdminProducts())
-            QuerySnapshot.forEach((pro)=>{
-                dispatch(add_adminProducts({...pro.data()  , time : newTime(pro.data().time) , id: pro.id})) ;
-            }
-        ) 
-        } , 
-    )
-    } catch (error) {
-        console.log(error);
-        alert("error while fetching the products ")
-    }
-}
 
 
 //function for making timestamp serializable
@@ -47,6 +23,33 @@ const newTime = (timestamp) => {
     }
  }
 
+
+const ProductDetail = () => {
+const dispatch = useDispatch()
+const [loading , setLoading] = useState(false)
+
+const adminId = auth.currentUser.uid
+const [ProductList , setProductList] = useState([])
+
+ //fetching the list from firestore
+ const getProduct = () => {
+    const collectionRef = collection (DB , "products")
+    const q = query(collectionRef, where("adminId" ,  "==" , adminId) ,orderBy("time") )
+
+    try {
+        onSnapshot(q ,(QuerySnapshot)=> {
+            dispatch(removeAdminProducts())
+            QuerySnapshot.forEach((pro)=>{
+                dispatch(add_adminProducts({...pro.data()  , time : newTime(pro.data().time) , id: pro.id})) ;
+            }
+        ) 
+        } , 
+    )
+    } catch (error) {
+        console.log(error);
+        alert("error while fetching the products ")
+    }
+}
 
 //intializing  from the store 
 useEffect(()=> {
@@ -84,7 +87,7 @@ const handleDelete = async(id)=> {
                 <h1 className=" text-xl text-pink-300 font-bold">All Product</h1>
                 {/* Add Product Button  */}
                 <NavLink to='/add_products'>
-                    <button className="px-5 py-2 font-semibold text-red-400 bg-pink-50 border border-pink-100 rounded-lg active:bg-pink-300 hover:bg-pink-400 hover:text-red-50 duration-500">Add Product</button>
+                    <button className="px-5 py-2 font-semibold text-red-400 bg-pink-50 border border-pink-100 rounded-lg active:bg-pink-300 hover:bg-pink-400 hover:text-red-50 duration-200">Add Product</button>
                 </NavLink>
             </div>
 
@@ -138,5 +141,5 @@ const handleDelete = async(id)=> {
         </div>
     );
 }
-
+export {newTime} 
 export default ProductDetail;
