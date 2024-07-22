@@ -98,7 +98,7 @@ const getAllProducts = async () => {
     let q ; 
     if(lastVisible !== 0 ){
         console.log(lastVisible);
-        q = query( collectionRef , startAfter(lastVisible), orderBy("time") , limit(2))
+        q = query( collectionRef , orderBy("time") , startAfter(lastVisible) , limit(2))
     }else{
         console.log("query else statement");
         q = query(collectionRef , orderBy("time") , limit(2))
@@ -111,8 +111,7 @@ const getAllProducts = async () => {
             const snapshot = qSnapshot.docs.map(doc =>  {
                 dispatch(pushProducts({ ...doc.data() , time: newTime(doc.data().time) , id: doc.id  }));  
             }) 
-            console.log(qSnapshot);
-            setlastvisible(lastVisible + 2 ) ;
+            setlastvisible(qSnapshot.docs[qSnapshot.docs.length - 1])
             console.log(lastVisible);
             setloading(false)
 

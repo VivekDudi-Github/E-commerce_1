@@ -38,6 +38,7 @@ const [ProductList , setProductList] = useState([])
 
     try {
         onSnapshot(q ,(QuerySnapshot)=> {
+            // console.log("run");
             dispatch(removeAdminProducts())
             QuerySnapshot.forEach((pro)=>{
                 dispatch(add_adminProducts({...pro.data()  , time : newTime(pro.data().time) , id: pro.id})) ;
