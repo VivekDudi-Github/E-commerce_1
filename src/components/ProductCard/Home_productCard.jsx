@@ -2,9 +2,11 @@ import { NavLink } from "react-router-dom";
 import {useSelector , useDispatch} from "react-redux"
 import { DB } from "../../firebase/firebase";
 import { collection , doc , query , getDocs, orderBy, limit, startAfter } from "firebase/firestore";
-import { useEffect } from "react";
+import { useEffect , useState } from "react";
 import {pushProducts , removeProducts} from "../../redux-store/productSlice"
 import {newTime} from "../admin/Product_detail"
+import Loader from "../track/Loader";
+
 
 // productData 
 const productData = [
@@ -86,30 +88,42 @@ const HomePageProductCard = () => {
 const dispatch = useDispatch() ;
 const productList = useSelector(state => state.productlist.productLists)
 
-const lastVisible = false ;
- 
-//getting all products
+const [loading , setloading] = useState(false)
+const [lastVisible , setlastvisible] = useState(0)
+console.log(lastVisible);
+
+//getting the products
 const getAllProducts = async () => {
     const collectionRef = collection(DB , "products")
     let q ; 
-    if(lastVisible){
+    if(lastVisible !== 0 ){
+        console.log(lastVisible);
         q = query( collectionRef , startAfter(lastVisible), orderBy("time") , limit(2))
     }else{
+        console.log("query else statement");
         q = query(collectionRef , orderBy("time") , limit(2))
     }
 
     try {
+            setloading(true)
+            console.log(loading);
             const qSnapshot = await getDocs(q) ;
-            dispatch(removeProducts()) ;
             const snapshot = qSnapshot.docs.map(doc =>  {
-                dispatch(pushProducts({ ...doc.data() , time: newTime(doc.data().time) , id: doc.id  }))
-            })
+                dispatch(pushProducts({ ...doc.data() , time: newTime(doc.data().time) , id: doc.id  }));  
+            }) 
+            console.log(qSnapshot);
+            setlastvisible(lastVisible + 2 ) ;
+            console.log(lastVisible);
+            setloading(false)
+
     } catch (error) {
+        setloading(false)
     console.log("error ",  error);
 }
 }
 
 useEffect(() => {
+    console.log("running func");
     getAllProducts() ;
 }, [])
 
@@ -118,6 +132,7 @@ useEffect(() => {
 
     return (
         <div className="mt-10">
+            {loading && <Loader/>}
             {/* Heading  */}
             <div className="">
                 <h1 className=" text-center mb-5 text-2xl font-semibold">Bestselling Products</h1>
@@ -128,14 +143,14 @@ useEffect(() => {
                 <div className="container px-5 py-5 mx-auto">
                     <div className="flex flex-wrap m-4">
                         {productList.map((item, index) => {
-                            const { image, title, price } = item
+                            const { image_url, title, price } = item
                             return (
                                 <div key={index} className="p-4 w-full md:w-1/4">
                                     <div className="h-full border border-gray-300 rounded-xl overflow-hidden shadow-md cursor-pointer">
                                           <NavLink to="/product_info">
                                             <img
                                                 className="lg:h-80  h-96 w-full object-contain"
-                                                src={`https://i.gadgets360cdn.com/products/large/Lava-Blaze-2-5G-DB-709x800-1698912333.jpg`}
+                                                src={image_url}
                                                 alt="blog"
                                             />
                                             </NavLink>
@@ -164,10 +179,11 @@ useEffect(() => {
                 </div>
             </section>
             
-            {/* load more */}
-            <div className="">
+            {/* load more button */}
+            <div className="w-full">
                 <button 
-                className=" mx-auto bg-pink-500 hover:bg-pink-600 w-[80%] text-white py-[8px] rounded-lg font-bold "
+                className=" block mx-auto bg-pink-500 hover:bg-pink-600 w-[80%] text-white py-[8px] rounded-lg font-bold active:scale-90 duration-200"
+                onClick={()=> getAllProducts()}
                 >Load More</button>
             </div>
         </div>
