@@ -4,7 +4,6 @@ import {useParams} from "react-router-dom"
 import { getDoc , doc  } from "firebase/firestore";
 import { DB } from "../../../firebase/firebase";
 import { useDispatch , useSelector } from "react-redux";
-// import { add_to_cart } from "../../../redux-store/productSlice";
 import addToCart from "../cart/addToCart";
 
 
