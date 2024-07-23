@@ -4,8 +4,6 @@ import { Trash } from 'lucide-react'
 import { useEffect, useState } from "react"
 
 const CartPage = () => {
-    const user = useSelector((state) => state.user.userData.name)
-    console.log(user);
     
 const products = [
     {

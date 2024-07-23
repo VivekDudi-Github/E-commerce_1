@@ -4,6 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     productLists: [],
     adminProductsList: [],
+    cartList : [] , 
   };
 
 const productSlice = createSlice({
@@ -21,9 +22,17 @@ const productSlice = createSlice({
         } , 
         removeAdminProducts : (state) => {
             state.adminProductsList = [] ; 
+        } ,
+        add_to_cart : (state , action) => {
+            state.cartList.push(action.payload)
+        } , 
+        remove_cart : (state , action) => {
+            state.cartList.filter(item => item.id !== action.id ) 
         }
     }
 })
-export const {pushProducts , removeProducts , removeAdminProducts , add_adminProducts } = productSlice.actions 
+
+export const {pushProducts , removeProducts , removeAdminProducts , add_adminProducts , 
+                add_to_cart , remove_cart } = productSlice.actions 
 export default  productSlice  ;
 

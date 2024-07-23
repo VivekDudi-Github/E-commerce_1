@@ -5,6 +5,7 @@ import { collection , doc , query , getDocs, orderBy, limit, startAfter } from "
 import { useEffect , useState } from "react";
 import {pushProducts , removeProducts} from "../../redux-store/productSlice"
 import {newTime} from "../admin/Product_detail"
+import addTocart from "../pages/cart/addToCart";
 import Loader from "../track/Loader";
 
 
@@ -85,11 +86,13 @@ const productData = [
 ]
 
 const HomePageProductCard = () => {
-const dispatch = useDispatch() ;
-const productList = useSelector(state => state.productlist.productLists)
+const addinCart = addTocart() ;
 
-const [loading , setloading] = useState(false)
-const [lastVisible , setlastvisible] = useState(0)
+const dispatch = useDispatch() ;
+const productList = useSelector(state => state.productlist.productLists) ;
+
+const [loading , setloading] = useState(false) ;
+const [lastVisible , setlastvisible] = useState(0) ;
 
 //getting the products
 const getAllProducts = async () => {
@@ -103,7 +106,6 @@ const getAllProducts = async () => {
 
     try {
             setloading(true)
-            console.log(loading);
             const qSnapshot = await getDocs(q) ;
             const snapshot = qSnapshot.docs.map(doc =>  {
                 dispatch(pushProducts({ ...doc.data() , time: newTime(doc.data().time) , id: doc.id  }));  
@@ -118,7 +120,6 @@ const getAllProducts = async () => {
 }
 
 useEffect(() => {
-    console.log("running func");
     getAllProducts() ;
 }, [])
 
@@ -161,7 +162,9 @@ useEffect(() => {
                                             </h1>
 
                                             <div className="flex justify-center ">
-                                                <button className=" bg-pink-500 hover:bg-pink-600 w-full text-white py-[4px] rounded-lg font-bold">
+                                                <button className=" bg-pink-500 hover:bg-pink-600 w-full text-white py-[4px] rounded-lg font-bold"
+                                                    onClick={() => addinCart(item , id) }
+                                                >
                                                     Add To Cart
                                                 </button>
                                             </div>

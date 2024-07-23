@@ -22,7 +22,7 @@ import Add_product_page from './components/pages/admin/Add_product_page.jsx'
 import Update_product_page from './components/pages/admin/Update_product_page.jsx'
 import User_procted_route from './protected_route/User_proctected_route.jsx'
 import Admin_protected_route from './protected_route/Admin_procted_route.jsx'
-
+import Catagory_page from './components/pages/catagory/Catagory_page.jsx' 
 
 function App() {
  console.log("new reload");
@@ -40,7 +40,9 @@ function App() {
             <Route path='/all_products' element={<All_products/>} />
             <Route path='/sign_up' element={<Sign_up/>} />
             <Route path='/login' element={<Login/>} />
-         
+            <Route path='/catagory_page/:catagory_name' element={<Catagory_page/>} />
+
+
             <Route path='/user_dashboard' element={
                       <User_procted_route>
                           <User_dashboard/>

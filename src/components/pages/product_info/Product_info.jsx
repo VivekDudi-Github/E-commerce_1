@@ -3,10 +3,16 @@ import { useState , useEffect} from "react";
 import {useParams} from "react-router-dom"
 import { getDoc , doc  } from "firebase/firestore";
 import { DB } from "../../../firebase/firebase";
+import { useDispatch , useSelector } from "react-redux";
+// import { add_to_cart } from "../../../redux-store/productSlice";
+import addToCart from "../cart/addToCart";
+
 
 
 const ProductInfo = () => {
-const {id} = useParams()  
+const add_in_cart = addToCart() ;
+
+const {id} = useParams() ;
 const [product , setProduct] = useState({
     title : "" , 
     price : "" , 
@@ -20,17 +26,16 @@ const getProduct = async () => {
         await getDoc(doc (DB , "products" , id))
        .then((pro) =>{
            if(pro){
-               console.log(pro.data());
                setProduct({
            title : pro.data().title ,
            price : pro.data().price ,
            description : pro.data().description , 
-           image : pro.data().image_url 
+           image : pro.data().image_url ,
        })
     }else {
         console.log("data didn't found");
     }
-       } )
+       })
      } catch (error) {
         console.log("error while retreiving data in product_info page" , error);
      }
@@ -39,6 +44,7 @@ const getProduct = async () => {
 useEffect(()=> {
     getProduct();
 } , [])
+
 
     return (
         <Layout>
@@ -138,6 +144,7 @@ useEffect(()=> {
                                    
                                     <button
                                         className="w-full px-4 py-3 text-center text-pink-600 bg-pink-100 border border-pink-600  hover:bg-pink-600 hover:text-gray-100 rounded-xl"
+                                        onClick={()=> add_in_cart(product , id )}
                                     >
                                         Add to cart
                                     </button>
