@@ -35,7 +35,7 @@ function App() {
           <Routes>
             <Route path='/' element={<Home/>} />
             <Route path='/*' element={<No_home/>} />
-            <Route path='/product_info' element={<Product_info/>} />
+            <Route path='/product_info/:id' element={<Product_info/>} />
             <Route path='/cart' element={<Cart/>} />
             <Route path='/all_products' element={<All_products/>} />
             <Route path='/sign_up' element={<Sign_up/>} />
@@ -59,9 +59,9 @@ function App() {
                     } />
          
             <Route path='/update_product/:id' element={
-                      // <Admin_protected_route>
+                      <Admin_protected_route>
                         <Update_product_page />
-                      //</Admin_protected_route> 
+                      </Admin_protected_route> 
                     } />
           
           </Routes>

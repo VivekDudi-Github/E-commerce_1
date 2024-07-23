@@ -98,7 +98,6 @@ const getAllProducts = async () => {
     if(lastVisible !== 0 ){
         q = query( collectionRef , orderBy("time") , startAfter(lastVisible) , limit(2))
     }else{
-        console.log("query else statement");
         q = query(collectionRef , orderBy("time") , limit(2))
     }
 
@@ -139,11 +138,11 @@ useEffect(() => {
                 <div className="container px-5 py-5 mx-auto">
                     <div className="flex flex-wrap m-4">
                         {productList.map((item, index) => {
-                            const { image_url, title, price } = item
+                            const { image_url, title, price, id } = item
                             return (
                                 <div key={index} className="p-4 w-full md:w-1/4">
                                     <div className="h-full border border-gray-300 rounded-xl overflow-hidden shadow-md cursor-pointer">
-                                          <NavLink to="/product_info">
+                                          <NavLink to={`/product_info/${id}`}>
                                             <img
                                                 className="lg:h-80  h-96 w-full object-contain"
                                                 src={image_url}
@@ -178,7 +177,7 @@ useEffect(() => {
             {/* load more button */}
             <div className="w-full">
                 <button 
-                className=" block mx-auto bg-pink-500 hover:bg-pink-600 w-[80%] text-white py-[8px] rounded-lg font-bold active:scale-90 duration-200"
+                className=" block mx-auto bg-pink-500 hover:bg-pink-600 w-[80%] text-white py-[8px] rounded-lg font-bold active:scale-95 duration-200"
                 onClick={()=> getAllProducts()}
                 >Load More</button>
             </div>
