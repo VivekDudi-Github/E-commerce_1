@@ -90,14 +90,12 @@ const productList = useSelector(state => state.productlist.productLists)
 
 const [loading , setloading] = useState(false)
 const [lastVisible , setlastvisible] = useState(0)
-console.log(lastVisible);
 
 //getting the products
 const getAllProducts = async () => {
     const collectionRef = collection(DB , "products")
     let q ; 
     if(lastVisible !== 0 ){
-        console.log(lastVisible);
         q = query( collectionRef , orderBy("time") , startAfter(lastVisible) , limit(2))
     }else{
         console.log("query else statement");
@@ -112,7 +110,6 @@ const getAllProducts = async () => {
                 dispatch(pushProducts({ ...doc.data() , time: newTime(doc.data().time) , id: doc.id  }));  
             }) 
             setlastvisible(qSnapshot.docs[qSnapshot.docs.length - 1])
-            console.log(lastVisible);
             setloading(false)
 
     } catch (error) {
