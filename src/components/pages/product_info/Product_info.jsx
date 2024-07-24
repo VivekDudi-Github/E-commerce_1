@@ -3,7 +3,6 @@ import { useState , useEffect} from "react";
 import {useParams} from "react-router-dom"
 import { getDoc , doc  } from "firebase/firestore";
 import { DB } from "../../../firebase/firebase";
-import { useDispatch , useSelector } from "react-redux";
 import addToCart from "../cart/addToCart";
 
 

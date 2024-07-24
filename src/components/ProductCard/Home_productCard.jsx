@@ -147,7 +147,7 @@ useEffect(() => {
                                             <img
                                                 className="lg:h-80  h-96 w-full object-contain"
                                                 src={image_url}
-                                                alt="blog"
+                                                alt="product_image"
                                             />
                                             </NavLink>
                                         <div className="p-6">
@@ -162,7 +162,7 @@ useEffect(() => {
                                             </h1>
 
                                             <div className="flex justify-center ">
-                                                <button className=" bg-pink-500 hover:bg-pink-600 w-full text-white py-[4px] rounded-lg font-bold"
+                                                <button className=" bg-pink-500 hover:bg-pink-600 w-full text-white py-[4px] rounded-lg font-bold active:scale-95 duration-200"
                                                     onClick={() => addinCart(item , id) }
                                                 >
                                                     Add To Cart

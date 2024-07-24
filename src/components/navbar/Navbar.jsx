@@ -13,6 +13,8 @@ const Navbar = () => {
 const navigate = useNavigate() ;
 const dispatch = useDispatch() ;
 
+const cartlist = useSelector(state => state.productlist.cartList)
+
 const auththentication = useSelector(state => state.user.IsLoggedIN)
 const AdminAuthenitcation = useSelector(state => state.user.role)
 
@@ -75,7 +77,7 @@ useEffect(() => {
             {/* Cart */}
             {authStatus && <li>
                 <Link to={'/cart'} >
-                    Cart(0)
+                    Cart({cartlist.length})
                 </Link>
             </li>}
 
