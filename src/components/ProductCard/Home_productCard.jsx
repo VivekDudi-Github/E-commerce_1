@@ -1,9 +1,9 @@
 import { NavLink } from "react-router-dom";
 import {useSelector , useDispatch} from "react-redux"
 import { DB } from "../../firebase/firebase";
-import { collection , doc , query , getDocs, orderBy, limit, startAfter } from "firebase/firestore";
+import { collection , query , getDocs, orderBy, limit, startAfter } from "firebase/firestore";
 import { useEffect , useState } from "react";
-import {pushProducts , removeProducts} from "../../redux-store/productSlice"
+import {pushProducts } from "../../redux-store/productSlice"
 import {newTime} from "../admin/Product_detail"
 import addTocart from "../pages/cart/addToCart";
 import Loader from "../track/Loader";
@@ -94,6 +94,8 @@ const productList = useSelector(state => state.productlist.productLists) ;
 const [loading , setloading] = useState(false) ;
 const [lastVisible , setlastvisible] = useState(0) ;
 
+const check_for_list = useSelector(state => state?.productlist?.productLists)
+
 //getting the products
 const getAllProducts = async () => {
     const collectionRef = collection(DB , "products")
@@ -120,7 +122,9 @@ const getAllProducts = async () => {
 }
 
 useEffect(() => {
-    getAllProducts() ;
+    if( check_for_list.length == 0 ){
+        getAllProducts() ;
+    }
 }, [])
 
 

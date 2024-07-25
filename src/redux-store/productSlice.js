@@ -36,9 +36,9 @@ const productSlice = createSlice({
                 ...state ,
                 cartList :  state.cartList.map((item) => { 
                             if(item.id == action.payload.id ){
-                                return {...item , amount : action.payload.amount }
+                                return {...item , amount : action.payload.amount == 0 ? 1  : action.payload.amount }
                             }else{
-                                console.log("Item with ID ${action.payload.id} not found in cart");
+                                console.log(`Item with ID ${action.payload.id} not found in cart`);
                                 return item ;
                             }
                             }) 

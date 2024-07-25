@@ -1,59 +1,19 @@
 import { useSelector , useDispatch} from "react-redux"
 import Layout from "../../layout/Layout"
 import { Minus, PlusSquareIcon, Trash } from 'lucide-react'
-import { useEffect, useState } from "react"
-import { remove_cart , cart_drecreamentQuantity , cart_changeQuantity } from "../../../redux-store/productSlice"
-import ProductInfo from "../product_info/Product_info"
-import { increment } from "firebase/firestore"
+import { remove_cart  , cart_changeQuantity } from "../../../redux-store/productSlice"
+import BuyNowModal from "../../buyNow/buyNow"
+
 
 const CartPage = () => {
 const dispatch = useDispatch()    
-const products = [
-    {
-        id: 1,
-        name: 'Nike Air Force 1 07 LV8',
-        href: '#',
-        price: '₹47,199',
-        originalPrice: '₹48,900',
-        discount: '5% Off',
-        color: 'Orange',
-        size: '8 UK',
-        imageSrc:
-            'https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/54a510de-a406-41b2-8d62-7f8c587c9a7e/air-force-1-07-lv8-shoes-9KwrSk.png',
-    },
-    {
-        id: 2,
-        name: 'Nike Blazer Low 77 SE',
-        href: '#',
-        price: '₹1,549',
-        originalPrice: '₹2,499',
-        discount: '38% off',
-        color: 'White',
-        leadTime: '3-4 weeks',
-        size: '8 UK',
-        imageSrc:
-            'https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/e48d6035-bd8a-4747-9fa1-04ea596bb074/blazer-low-77-se-shoes-0w2HHV.png',
-    },
-    {
-        id: 3,
-        name: 'Nike Air Max 90',
-        href: '#',
-        price: '₹2219 ',
-        originalPrice: '₹999',
-        discount: '78% off',
-        color: 'Black',
-        imageSrc:
-            'https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/fd17b420-b388-4c8a-aaaa-e0a98ddf175f/dunk-high-retro-shoe-DdRmMZ.png',
-    } 
-]
-
 
 const cartlist = useSelector(state => state.productlist.cartList)
-console.log(cartlist);
 
-const total_price = cartlist.reduce((preValue , currValue) => (preValue) + Number(currValue.price) , 0)
+
+const total_price = cartlist.reduce((preValue , currValue) =>  (preValue) + (currValue.amount ?  Number(currValue.price) * Number(currValue.amount) : Number(currValue.price)) , 0)
 const discount = cartlist.some(item => item.discount) ? cartlist.reduce((acc , curr) => acc + curr?.discount , 0 )  : 0
-   
+
 //removing item from cartlist
  const remove_item = (id) => {
     try {
@@ -74,14 +34,33 @@ const increment = (id , amount) => {
     }
     
     try {
-        
-       console.log(amount);
-        dispatch(cart_changeQuantity(id , amount))
+        dispatch(cart_changeQuantity({id , amount}))
     } catch (error) {
         console.log( "error while dispatching increasingQuantity in cart.jsx " , error);
     }
 }
 
+const Change_quantity = (id , amount) => {
+    try {
+        dispatch(cart_changeQuantity({id , amount}))
+    } catch (error) {
+        console.log( "error while dispatching increasingQuantity in cart.jsx " , error);
+    }
+}
+
+const decreament = (id , amount) => {
+    if(amount){
+        amount =  Number(amount) 
+         amount --
+      }else {
+          amount = 1 ;
+      }
+      try {
+          dispatch(cart_changeQuantity({id , amount}))
+      } catch (error) {
+          console.log( "error while dispatching decreasing Quantity in cart.jsx " , error);
+      }
+}
 
 return (
         <Layout>
@@ -99,6 +78,7 @@ return (
                                
                             {/* cartList */}
                                 {cartlist.map((product) => (
+                                    
                                     <div key={product.id} className="">
                                         <li className="flex py-6 sm:py-6 ">
                                             <div className="flex-shrink-0">
@@ -142,21 +122,24 @@ return (
                                             </div>
                                         </li>
                                    
+                        {/* increment--decrement buttons */}
                                         <div className="mb-2 flex">
                                             <div className="min-w-24 flex">
-                                                <button type="button" className="h-7 w-7 flex items-center justify-center border-[1px] border-gray-200 rounded-lg hover:border-gray-400 active:bg-gray-500 duration-100 ease-in ">
+                                                <button type="button" className="h-7 w-7 flex items-center justify-center border-[1px] border-gray-200 rounded-lg hover:border-gray-400 active:bg-gray-500 duration-100 ease-in "
+                                                onClick={() => decreament( product.id  , product.amount)}
+                                                >
                                                     <Minus size={18} className="text-pink-500 " />
                                                 </button>
                                                 <input
                                                     type="text"
                                                     className="mx-1 h-7 w-9 rounded-md border text-center"
                                                     value={product.amount || 1 }
-                                                    onChange={ (e) => increaseQuantity( id , e.target.value)}
+                                                    onChange={ (e) => increment( product.id , e.target.value)}
                                                 />
                                                 <button type="button" className="flex h-7 w-7 items-center justify-center border-[1px] border-gray-200 rounded-lg hover:border-gray-400 active:bg-gray-500 duration-100 ease-in "
                                                      onClick={() => increment( product.id  , product.amount)}
                                                  >
-                                                    <PlusSquareIcon  size={18} className="text-pink-500 " />
+                                                    <PlusSquareIcon size={18} className="text-pink-500 " />
                                                 </button>
                                             </div>
                                             <div className="ml-6 flex text-sm border-[1px] border-gray-200 rounded-lg hover:border-gray-400 active:bg-gray-500 duration-100 ease-in">
@@ -208,11 +191,7 @@ return (
                                 </dl>
                                 <div className="px-2 pb-4 font-medium text-green-700">
                                 <div className="flex gap-4 mb-6">
-                                    <button
-                                        className="w-full px-4 py-3 text-center text-gray-100 bg-pink-600 border border-transparent dark:border-gray-700 hover:border-pink-500 hover:text-pink-700 hover:bg-pink-100 rounded-xl"
-                                    >
-                                        Buy now
-                                    </button>
+                                    <BuyNowModal/>
                                 </div>
                                 </div>
                             </div>
