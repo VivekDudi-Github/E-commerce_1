@@ -2,8 +2,9 @@ import { useSelector , useDispatch} from "react-redux"
 import Layout from "../../layout/Layout"
 import { Minus, PlusSquareIcon, Trash } from 'lucide-react'
 import { useEffect, useState } from "react"
-import { remove_cart , cart_drecreamentQuantity , cart_incrementQuantity } from "../../../redux-store/productSlice"
+import { remove_cart , cart_drecreamentQuantity , cart_changeQuantity } from "../../../redux-store/productSlice"
 import ProductInfo from "../product_info/Product_info"
+import { increment } from "firebase/firestore"
 
 const CartPage = () => {
 const dispatch = useDispatch()    
@@ -56,13 +57,30 @@ const discount = cartlist.some(item => item.discount) ? cartlist.reduce((acc , c
 //removing item from cartlist
  const remove_item = (id) => {
     try {
-        console.log(id)
-        console.log("action dispatched");
         dispatch(remove_cart(id))   
     } catch (error) {
         console.log( "error while removing from list" , error)
     }
  }
+
+//increase and decrease item-quantity 
+
+const increment = (id , amount) => {
+    if(amount){
+      amount =  Number(amount) 
+       amount++
+    }else {
+        amount = 1 ;
+    }
+    
+    try {
+        
+       console.log(amount);
+        dispatch(cart_changeQuantity(id , amount))
+    } catch (error) {
+        console.log( "error while dispatching increasingQuantity in cart.jsx " , error);
+    }
+}
 
 
 return (
@@ -135,7 +153,9 @@ return (
                                                     value={product.amount || 1 }
                                                     onChange={ (e) => increaseQuantity( id , e.target.value)}
                                                 />
-                                                <button type="button" className="flex h-7 w-7 items-center justify-center border-[1px] border-gray-200 rounded-lg hover:border-gray-400 active:bg-gray-500 duration-100 ease-in ">
+                                                <button type="button" className="flex h-7 w-7 items-center justify-center border-[1px] border-gray-200 rounded-lg hover:border-gray-400 active:bg-gray-500 duration-100 ease-in "
+                                                     onClick={() => increment( product.id  , product.amount)}
+                                                 >
                                                     <PlusSquareIcon  size={18} className="text-pink-500 " />
                                                 </button>
                                             </div>

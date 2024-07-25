@@ -17,11 +17,9 @@ const cartList = useSelector(state => state.productlist.cartList)
                     cartList.forEach((item) => console.log(item.id , id))
                     alert("Product already in the cart")
                 }else{
-                    console.log("dispatched");
                     dispatch(add_to_cart({...product , id : id }))
                 }
             }else {
-                console.log("dispatched for empty array");
                 dispatch(add_to_cart({...product , id : id }))
             }
         }else {

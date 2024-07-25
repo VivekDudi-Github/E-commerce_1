@@ -31,30 +31,30 @@ const productSlice = createSlice({
            const updated_cartList = state.cartList.filter(item => item.id !== action.payload  ) 
            return {...state , cartList : updated_cartList};
         } , 
-        cart_incrementQuantity : (state , action) => {
-            state.cartList.forEach((item) => { 
-                if(item.id == action.payload.id ){
-                    item.amount ? 
-                    item = { ...item , amount : 1}  
-                    : 
-                    item = {...item , amount : action.payload.amount }
-                } 
-            })
-        } , 
+        cart_changeQuantity : (state , action) => {
+            return {
+                ...state ,
+                cartList :  state.cartList.map((item) => { 
+                            if(item.id == action.payload.id ){
+                                return {...item , amount : action.payload.amount }
+                            }else{
+                                console.log("Item with ID ${action.payload.id} not found in cart");
+                                return item ;
+                            }
+                            }) 
+        }} , 
         cart_drecreamentQuantity : (state , action) => {
+            return ( 
             state.cartList.forEach((item) => { 
                 if(item.id == action.payload.id ){
-                    item.amount ? 
-                    item = { ...item , amount : 0}  
-                    : 
-                    item = {...item , amount : action.payload.amount }
+                   
                 } 
-            })
+            }))
             }
     }
 })
 
 export const {pushProducts , removeProducts , removeAdminProducts , add_adminProducts , 
-                add_to_cart , remove_cart , cart_drecreamentQuantity , cart_incrementQuantity } = productSlice.actions 
+                add_to_cart , remove_cart , cart_drecreamentQuantity , cart_changeQuantity } = productSlice.actions 
 export default  productSlice  ;
 
