@@ -12,12 +12,13 @@ const navigate = useNavigate()
 
 const [productDetail , setDetails] = useState({
     price : "" , 
-    descripton : "" , 
+    description : "" , 
     title : "" , 
-    imageurl : "" , 
+    image_url : "" , 
     catagory : "" ,
     time : "" ,
     date : "" , 
+    adminId : "" ,
 })
 console.log(productDetail);
    
@@ -58,13 +59,14 @@ const getProduct = async () =>{
     if(doc) {
         console.log(doc.data());
       setDetails({
-        price : doc.data().price  , 
-        title: doc.data().title , 
-        imageurl : doc.data().image_url , 
-        catagory : doc.data().catagory , 
-        description : doc.data().descripton ,
-        time : doc.data().time , 
-        date : doc.data().date , 
+        price : doc.data().price  || "", 
+        title: doc.data().title  || "", 
+        image_url : doc.data().image_url || "" , 
+        catagory : doc.data().catagory || "" , 
+        description : doc.data().description || "" ,
+        time : doc.data().time  || "" , 
+        date : doc.data().date  || "" , 
+        adminId : doc.data().adminId  || "" ,
       })
     } 
     setloading(false) ;
@@ -93,7 +95,7 @@ try {
         await setDoc( doc(DB , "products" , id) , productDetail)
         .then(() => {
             alert("Updated Successfully")
-            navigate("/admin_dashbod")
+            navigate("/admin_dashboard")
         })
         .catch((error) => {
             setloading(false) ;
@@ -164,8 +166,8 @@ const handleChange = (event) => {
                   <div className="mb-3">
                       <input
                           type="text"
-                          name="imageurl"
-                          value= {productDetail.imageurl || ""}
+                          name="image_url"
+                          value= {productDetail.image_url || ""}
                           onChange={handleChange}
                           placeholder='Product Image Url' required
                           className='bg-pink-50 border text-pink-300 border-pink-200 px-2 py-2 w-96 rounded-md outline-none placeholder-pink-300'
@@ -175,6 +177,7 @@ const handleChange = (event) => {
                   {/* Input Four  */}
                   <div className="mb-3">
                       <select
+                          name="catagory"
                           className="w-full px-1 py-2 text-pink-300 bg-pink-50 border border-pink-200 rounded-md outline-none  "
                           value={productDetail.catagory ? productDetail.catagory :"fashion" }
                           onChange={(event) => handleChange(event)}>
@@ -193,7 +196,7 @@ const handleChange = (event) => {
                   <div className="mb-3">
                       <textarea
                           name="description" required
-                          value= {productDetail.descripton || ""}
+                          value= {productDetail.description || ""}
                           onChange={handleChange}
                           placeholder="Product Description" rows="5" className=" w-full px-2 py-1 text-pink-300 bg-pink-50 border border-pink-200 rounded-md outline-none placeholder-pink-300 ">
                       </textarea>

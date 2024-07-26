@@ -53,7 +53,7 @@ useEffect(()=> {
                             <div className="">
                                 <div className="">
                                     <img
-                                        className=" w-full lg:h-[39em] rounded-lg"
+                                        className=" w-full lg:h-[39em] rounded-lg object-cover"
                                         src={product.image}
                                         alt="product image"
                                     />

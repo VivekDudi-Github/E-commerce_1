@@ -38,7 +38,6 @@ const [ProductList , setProductList] = useState([])
 
     try {
         onSnapshot(q ,(QuerySnapshot)=> {
-            // console.log("run");
             dispatch(removeAdminProducts())
             QuerySnapshot.forEach((pro)=>{
                 dispatch(add_adminProducts({...pro.data()  , time : newTime(pro.data().time) , id: pro.id})) ;
@@ -52,9 +51,8 @@ const [ProductList , setProductList] = useState([])
     }
 }
 
-//intializing  from the store 
 useEffect(()=> {
-getProduct() ;
+    getProduct() ;
 } , [])
 
 
@@ -115,7 +113,7 @@ const handleDelete = async(id)=> {
                            </td>
                            <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
                                 <div className="flex justify-center">
-                                    <img className="w-20 " src={"https://i.pinimg.com/736x/e4/61/f2/e461f2246b6ad93e2099d98780626396.jpg"} alt="image" />
+                                    <img className="w-20 " src={image_url} alt="image" />
                                 </div>
                            </td>
                            <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">

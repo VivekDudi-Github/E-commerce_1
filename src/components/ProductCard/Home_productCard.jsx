@@ -109,7 +109,7 @@ const getAllProducts = async () => {
     try {
             setloading(true)
             const qSnapshot = await getDocs(q) ;
-            const snapshot = qSnapshot.docs.map(doc =>  {
+            qSnapshot.docs.map(doc =>  {
                 dispatch(pushProducts({ ...doc.data() , time: newTime(doc.data().time) , id: doc.id  }));  
             }) 
             setlastvisible(qSnapshot.docs[qSnapshot.docs.length - 1])

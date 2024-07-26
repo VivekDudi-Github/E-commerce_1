@@ -30,8 +30,7 @@ const BuyNowModal = () => {
 const buyNowFunction = async(e) => {
     e.preventDefault() ;
 
-    const orderIfo = {
-        cartItems , 
+    const orderIfo = { 
         addressInfo ,
         email : auth.currentUser.email , 
         userId :  auth.currentUser.uid , 
@@ -43,21 +42,23 @@ const buyNowFunction = async(e) => {
                 month: "short",
                 day: "2-digit",
                 year: "numeric",
+                
             })   
     }
 
     const collectionRef = collection( DB , "orders")
     try {
-        await addDoc(collectionRef , orderIfo)
-        .then(() => {
+        cartItems.forEach( async (item) => {
+           await addDoc(collectionRef , {...orderIfo , product : item , adminId : item.adminId}) 
+        });
             alert(" Order Placed Successfully")
-        })
+            handleOpen() ;
+        
           setAddressInfo({name: "" , address : "" , pincode : "" , mobileNumber : "" })
     } catch (error) {
         console.log("error while placing an order" , error);
         alert("An error occurred while placing the order")
     }
-
     }
 
 
