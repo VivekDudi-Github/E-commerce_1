@@ -24,7 +24,7 @@ const BuyNowModal = () => {
                 day: "2-digit",
                 year: "numeric",
             }
-        )
+        ) 
     });
 
 const buyNowFunction = async(e) => {
