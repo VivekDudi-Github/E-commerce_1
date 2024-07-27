@@ -6,6 +6,8 @@ import { useSelector } from "react-redux";
 
 const BuyNowModal = () => {
     const [open, setOpen] = useState(false);
+    const [orderCount, setorderCount] = useState(0);
+
 
     const userId = auth.currentUser?.uid
     // console.log(auth.currentUser?.email);
@@ -27,14 +29,17 @@ const BuyNowModal = () => {
         ) 
     });
 
-const buyNowFunction = async(e) => {
+const buyNowFunction = async (e) => {
     e.preventDefault() ;
+    const collectionRef = collection( DB , "orders")
 
-    const orderIfo = { 
+    const orderInfo = { 
         addressInfo ,
         email : auth.currentUser.email , 
         userId :  auth.currentUser.uid , 
         status: "confirmed",
+        delivered : false ,
+        dispatched : false ,
         time: Timestamp.now(),
         date: new Date().toLocaleString(
             "en-US",
@@ -45,20 +50,48 @@ const buyNowFunction = async(e) => {
                 
             })   
     }
-
-    const collectionRef = collection( DB , "orders")
+    
     try {
-        cartItems.forEach( async (item) => {
-           await addDoc(collectionRef , {...orderIfo , product : item , adminId : item.adminId}) 
-        });
-            alert(" Order Placed Successfully")
-            handleOpen() ;
-        
-          setAddressInfo({name: "" , address : "" , pincode : "" , mobileNumber : "" })
+        let orderCount ; 
+
+         for( const item of cartItems){
+            console.log("starting Loop");
+
+            try {
+               await addDoc( collectionRef , {...orderInfo , adminId : item.adminId , product : item }) 
+                orderCount ++ ;
+            } catch (error) {
+                alert( `order failed after ${orderCount} orders`)
+                console.log("error while doing loop for placing an order" , error)
+            }
+            alert(`${orderCount} Orders Placed Successfully`);
+            handleOpen();
+            setAddressInfo({ name: "", address: "", pincode: "", mobileNumber: "" });
+         }
+
+
     } catch (error) {
-        console.log("error while placing an order" , error);
-        alert("An error occurred while placing the order")
+        console.log(error);
     }
+
+    // const collectionRef = collection( DB , "orders")
+    // try {
+    //     cartItems.forEach( async (item) => {
+    //         console.log("doing loop");
+    //        await addDoc(collectionRef , {...orderInfo , product : item , adminId : item.adminId}) 
+    //        .then(()=> { console.log("done loop");
+    //         setorderCount(orderCount ++)})
+    //        .catch(()=> alert(`order failed after ${orderCount} orders` ))
+    //         return null 
+    //     });
+    //         alert(`${orderCount} Orders Placed Successfully`)
+    //         handleOpen() ;
+        
+    //       setAddressInfo({name: "" , address : "" , pincode : "" , mobileNumber : "" })
+    // } catch (error) {
+    //     console.log("error while placing an order" , error);
+    //     alert("An error occurred while placing the order")
+    // }
     }
 
 
