@@ -3,11 +3,13 @@ import { useState } from "react";
 import { auth, DB } from "../../firebase/firebase";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { useSelector } from "react-redux";
+import Loader from "../track/Loader";
 
 const BuyNowModal = () => {
     const [open, setOpen] = useState(false);
-    const [orderCount, setorderCount] = useState(0);
+    const [orderCounta, setorderCount] = useState(0);
 
+    const [loader , setLoader] = useState(false)
 
     const userId = auth.currentUser?.uid
     // console.log(auth.currentUser?.email);
@@ -51,47 +53,65 @@ const buyNowFunction = async (e) => {
             })   
     }
     
-    try {
-        let orderCount ; 
+    // try {
+    //     let orderCount = 0 ; 
 
-         for( const item of cartItems){
-            console.log("starting Loop");
+    //      for( const item of cartItems){
+    //         console.log("starting Loop");
 
-            try {
-               await addDoc( collectionRef , {...orderInfo , adminId : item.adminId , product : item }) 
-                orderCount ++ ;
-            } catch (error) {
-                alert( `order failed after ${orderCount} orders`)
-                console.log("error while doing loop for placing an order" , error)
-            }
-            alert(`${orderCount} Orders Placed Successfully`);
-            handleOpen();
-            setAddressInfo({ name: "", address: "", pincode: "", mobileNumber: "" });
-         }
+    //         try {
+    //            await addDoc( collectionRef , {...orderInfo , adminId : item.adminId , product : item }) 
+    //             orderCount ++ ;
+    //         } catch (error) {
+    //             alert( `order failed after ${orderCount} orders`)
+    //             console.log("error while doing loop for placing an order" , error)
+    //         }
+    //         alert(`${orderCount} Orders Placed Successfully`);
+    //         handleOpen();
+    //         setAddressInfo({ name: "", address: "", pincode: "", mobileNumber: "" });
+    //      }
 
 
-    } catch (error) {
-        console.log(error);
-    }
+    // } catch (error) {
+    //     console.log(error);
+    // }
 
     // const collectionRef = collection( DB , "orders")
-    // try {
-    //     cartItems.forEach( async (item) => {
-    //         console.log("doing loop");
-    //        await addDoc(collectionRef , {...orderInfo , product : item , adminId : item.adminId}) 
-    //        .then(()=> { console.log("done loop");
-    //         setorderCount(orderCount ++)})
-    //        .catch(()=> alert(`order failed after ${orderCount} orders` ))
-    //         return null 
-    //     });
-    //         alert(`${orderCount} Orders Placed Successfully`)
-    //         handleOpen() ;
-        
-    //       setAddressInfo({name: "" , address : "" , pincode : "" , mobileNumber : "" })
-    // } catch (error) {
-    //     console.log("error while placing an order" , error);
-    //     alert("An error occurred while placing the order")
-    // }
+
+    try {
+        let orderCount = 0 ;
+        const promises = cartItems.map( async (item) => {
+           try {
+            setLoader(true)
+            await addDoc(collectionRef , {...orderInfo , product : item , adminId : item.adminId})
+            orderCount ++ ;
+            console.log("done Loop");
+            setLoader(false)
+            return Promise.resolve() ;
+            
+        } catch (error) {
+            alert( `order failed after ${orderCount} orders`) ;
+            console.log("error while doing loop for placing an order" , error);
+            return Promise.reject(error);
+        } 
+    
+        });
+           await Promise.all(promises)
+           .then(()=>{
+            alert(`${orderCount} Orders Placed Successfully`) ;
+            handleOpen();
+            setLoader(false)
+            setAddressInfo({ name: "", address: "", pincode: "", mobileNumber: "" });
+           })
+           .catch(()=> {
+            console.error("Errors occurred:", errors);
+            alert("An error occurred while placing the order");
+           })
+    
+    } catch (error) {
+        console.log("error while placing an order" , error);
+        alert("An error occurred while placing the order")
+    }
     }
 
 
@@ -99,6 +119,9 @@ const buyNowFunction = async (e) => {
     const handleOpen = () => setOpen(!open);
     return (
         <>
+        <span className="z-50 absolute">
+        { Loader && <Loader/>}
+        </span>
             <Button
                 type="button"
                 onClick={handleOpen}
