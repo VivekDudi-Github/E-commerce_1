@@ -7,12 +7,9 @@ import Loader from "../track/Loader";
 
 const BuyNowModal = () => {
     const [open, setOpen] = useState(false);
-    const [orderCounta, setorderCount] = useState(0);
 
     const [loader , setLoader] = useState(false)
 
-    const userId = auth.currentUser?.uid
-    // console.log(auth.currentUser?.email);
     const cartItems = useSelector(state => state.productlist?.cartList)
 
     const [addressInfo, setAddressInfo] = useState({
@@ -31,6 +28,7 @@ const BuyNowModal = () => {
         ) 
     });
 
+//function to place order 
 const buyNowFunction = async (e) => {
     e.preventDefault() ;
     const collectionRef = collection( DB , "orders")
@@ -52,65 +50,44 @@ const buyNowFunction = async (e) => {
                 
             })   
     }
-    
-    // try {
-    //     let orderCount = 0 ; 
-
-    //      for( const item of cartItems){
-    //         console.log("starting Loop");
-
-    //         try {
-    //            await addDoc( collectionRef , {...orderInfo , adminId : item.adminId , product : item }) 
-    //             orderCount ++ ;
-    //         } catch (error) {
-    //             alert( `order failed after ${orderCount} orders`)
-    //             console.log("error while doing loop for placing an order" , error)
-    //         }
-    //         alert(`${orderCount} Orders Placed Successfully`);
-    //         handleOpen();
-    //         setAddressInfo({ name: "", address: "", pincode: "", mobileNumber: "" });
-    //      }
-
-
-    // } catch (error) {
-    //     console.log(error);
-    // }
-
-    // const collectionRef = collection( DB , "orders")
 
     try {
-        let orderCount = 0 ;
+        let orderCount = 0 ;``
+
+//looping cart items to create new orders        
         const promises = cartItems.map( async (item) => {
            try {
             setLoader(true)
             await addDoc(collectionRef , {...orderInfo , product : item , adminId : item.adminId})
+            handleOpen();
             orderCount ++ ;
-            console.log("done Loop");
             setLoader(false)
             return Promise.resolve() ;
             
         } catch (error) {
             alert( `order failed after ${orderCount} orders`) ;
             console.log("error while doing loop for placing an order" , error);
-            return Promise.reject(error);
+            setLoader(false)
+            return Promise.reject(error);  
         } 
     
         });
            await Promise.all(promises)
            .then(()=>{
             alert(`${orderCount} Orders Placed Successfully`) ;
-            handleOpen();
             setLoader(false)
             setAddressInfo({ name: "", address: "", pincode: "", mobileNumber: "" });
            })
            .catch(()=> {
             console.error("Errors occurred:", errors);
             alert("An error occurred while placing the order");
+            setLoader(false)
            })
     
     } catch (error) {
         console.log("error while placing an order" , error);
         alert("An error occurred while placing the order")
+        setLoader(false)
     }
     }
 
@@ -119,9 +96,6 @@ const buyNowFunction = async (e) => {
     const handleOpen = () => setOpen(!open);
     return (
         <>
-        <span className="z-50 absolute">
-        { Loader && <Loader/>}
-        </span>
             <Button
                 type="button"
                 onClick={handleOpen}
@@ -129,7 +103,11 @@ const buyNowFunction = async (e) => {
             >
                 Buy now
             </Button>
-            <Dialog open={open} handler={handleOpen} className=" bg-pink-50">
+            <Dialog open={open} handler={handleOpen} className=" bg-pink-50 z-40">
+                
+            <span className="z-50 absolute">
+             { loader && <Loader/>}
+            </span>
                 <DialogBody className="">
                     <form onSubmit={buyNowFunction}>  
                         <div className="mb-3">
