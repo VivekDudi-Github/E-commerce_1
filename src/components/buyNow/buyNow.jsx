@@ -2,16 +2,20 @@ import {Button , Dialog , DialogBody } from "@material-tailwind/react";
 import { useState } from "react";
 import { auth, DB } from "../../firebase/firebase";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
-import { useSelector } from "react-redux";
+import { useSelector , useDispatch } from "react-redux";
 import Loader from "../track/Loader";
+import {clear_cart} from "../../redux-store/productSlice"
 
 const BuyNowModal = () => {
+const dispatch = useDispatch() ;
+
     const [open, setOpen] = useState(false);
 
-    const [loader , setLoader] = useState(false)
+    const [loader , setLoader] = useState(false) ;
 
-    const cartItems = useSelector(state => state.productlist?.cartList)
+    const cartItems = useSelector(state => state.productlist?.cartList) ;
 
+//buyer's data
     const [addressInfo, setAddressInfo] = useState({
         name: "",
         address: "",
@@ -57,18 +61,18 @@ const buyNowFunction = async (e) => {
 //looping cart items to create new orders        
         const promises = cartItems.map( async (item) => {
            try {
-            setLoader(true)
-            await addDoc(collectionRef , {...orderInfo , product : item , adminId : item.adminId})
-            handleOpen();
-            orderCount ++ ;
-            setLoader(false)
-            return Promise.resolve() ;
+                setLoader(true)
+                await addDoc(collectionRef , {...orderInfo , product : item , adminId : item.adminId})
+                handleOpen();
+                orderCount ++ ;
+                setLoader(false)
+                return Promise.resolve() ;
             
-        } catch (error) {
-            alert( `order failed after ${orderCount} orders`) ;
-            console.log("error while doing loop for placing an order" , error);
-            setLoader(false)
-            return Promise.reject(error);  
+            } catch (error) {
+                alert( `order failed after ${orderCount} orders`) ;
+                console.log("error while doing loop for placing an order" , error);
+                setLoader(false)
+                return Promise.reject(error);  
         } 
     
         });
@@ -76,6 +80,7 @@ const buyNowFunction = async (e) => {
            .then(()=>{
             alert(`${orderCount} Orders Placed Successfully`) ;
             setLoader(false)
+            dispatch(clear_cart())
             setAddressInfo({ name: "", address: "", pincode: "", mobileNumber: "" });
            })
            .catch(()=> {
@@ -90,8 +95,6 @@ const buyNowFunction = async (e) => {
         setLoader(false)
     }
     }
-
-
 
     const handleOpen = () => setOpen(!open);
     return (

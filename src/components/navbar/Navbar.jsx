@@ -7,7 +7,7 @@ import { signOut  } from "firebase/auth";
 import { useState } from "react";
 import {useDispatch, useSelector} from "react-redux"
 import {loggingIn , logginOut ,add_role , addUserdata } from "../../redux-store/userSlice"
-import { cart_remove } from "../../redux-store/productSlice";
+import { clear_cart } from "../../redux-store/productSlice";
 
 
 const Navbar = () => {
@@ -34,7 +34,7 @@ useEffect(() => {
             signOut(auth) ;
             console.log("logged out");
             setAuthStatus(false) ;
-            dispatch(cart_remove()) ;
+            dispatch(clear_cart()) ;
             dispatch(logginOut()) ;
             navigate("/login") ;
             

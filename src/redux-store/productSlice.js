@@ -51,13 +51,13 @@ const productSlice = createSlice({
                 } 
             }))
         } ,
-        cart_remove : (state , action) => {
+        clear_cart : (state , action) => {
             state.cartList = []
         }
     }
 })
 
 export const {pushProducts , removeProducts , removeAdminProducts , add_adminProducts , 
-                add_to_cart , remove_cart , cart_drecreamentQuantity , cart_changeQuantity , cart_remove } = productSlice.actions 
+                add_to_cart , remove_cart , cart_drecreamentQuantity , cart_changeQuantity , clear_cart } = productSlice.actions 
 export default  productSlice  ;
 

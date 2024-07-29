@@ -1,13 +1,29 @@
-import { where , getDoc ,query , collection, orderBy } from "firebase/firestore";
+import { where , QuerySnapshot ,query , collection, orderBy } from "firebase/firestore";
 import { auth, DB } from "../../firebase/firebase";
+import { useEffect } from "react";
 
 const OrderDetail = () => {
 const orderRef = collection(DB , "orders")
 const adminId = auth.currentUser.uid
 
-    const fetch_Orders = () => {
+const fetching_Orders = async() => {
         const q = query(orderRef , orderBy("date") , where("adminId" , "==" , adminId ))
+        try {
+            await QuerySnapshot(q , (orders)=> {
+                console.log(orders.data())
+            })
+            // .then( (doc) => {
+            //     console.log(doc)
+            // })
+        } catch (error) {
+            alert('No orders found')
+            console.log( "error while fetching order details", error );
+        }
     }
+
+useEffect(() => {
+    fetching_Orders() ;
+} , [])
 
 
 
