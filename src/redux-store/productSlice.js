@@ -39,7 +39,6 @@ const productSlice = createSlice({
                             if(item.id == action.payload.id ){
                                 return {...item , amount : action.payload.amount == 0 ? 1  : action.payload.amount }
                             }else{
-                                console.log(`Item with ID ${action.payload.id} not found in cart`);
                                 return item ;
                             }
                             }) 
@@ -55,11 +54,13 @@ const productSlice = createSlice({
         clear_cart : (state , action) => {
             state.cartList = []
         } ,
+
         addToOrderList : (state , action ) => {
             state.orderList.push(action.payload)
         } ,
         remove_orderList : (state , action) => {
             const updated_orderList = state.orderList.filter( item => item.id !== action.payload)
+            console.log(updated_orderList);
             return { ...state ,cartList: updated_orderList} ;
         } ,
         clear_orderList : (state) => {

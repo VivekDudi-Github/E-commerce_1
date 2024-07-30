@@ -1,30 +1,40 @@
-import { where , onSnapshot ,query , collection, orderBy, limit } from "firebase/firestore";
+import { where , onSnapshot ,query , collection, orderBy, limit  , deleteDoc , doc} from "firebase/firestore";
 import { auth, DB } from "../../firebase/firebase";
-import { useEffect } from "react";
-import { addToOrderList } from "../../redux-store/productSlice";
+import { useEffect, useState } from "react";
+import { addToOrderList  , clear_orderList , remove_orderList} from "../../redux-store/productSlice";
 import { useDispatch , useSelector } from "react-redux";
-import {newTime} from "./Product_detail"
+import {newTime} from "./Product_detail" ;
+import Loader from "../track/Loader";
 
 
 const OrderDetail = () => {
-const dispatch = useDispatch()
+const [loader , setLoader] = useState(false)
+const dispatch = useDispatch() ;
 
 const orderRef = collection(DB , "orders")
 const adminId = auth.currentUser.uid
 
-const orderList  = useSelector( state => state.productlist.orderList)
-console.log(orderList);
+const [list , setList] = useState([]) 
 
+//fetching data from list
 const fetching_Orders = () => {
+    setLoader(true)
         const q = query(orderRef , orderBy("date") , where("adminId" , "==" , adminId ) , limit(10))
         try {
              onSnapshot(q , (qSnapshot)=> {
-                qSnapshot.forEach((item) => {
+                dispatch(clear_orderList())
+                if(qSnapshot.empty){
+                    setLoader(false)
+                    alert("no orders found")
+                }else{
+                qSnapshot.forEach((item) => {      
                     const data = item.data() ;
                     dispatch(addToOrderList({ ...item.data() , id : item.id  , time : newTime(data.time) , addressInfo : {...data.addressInfo , time : newTime(data.addressInfo.time)}}))
-                })
+                    setLoader(false)
+                })}
             })
         } catch (error) {
+            setLoader(false)
             alert('No orders found')
             console.log( "error while fetching order details", error );
         }
@@ -36,9 +46,33 @@ useEffect(() => {
 } , [])
 
 
+//getting list from store
+const orderList  = useSelector( state => state.productlist.orderList)
+useEffect(() => {
+    if(orderList) {
+        setList(orderList)
+    }
+} , [orderList])
+
+
+//delete function
+const handleDelete = async(id) => {
+    setLoader(true)
+    try {
+        await deleteDoc(doc(DB , "orders" , id) )
+        dispatch(remove_orderList(id)) 
+        alert("order deleted sucessfully")
+        setLoader(false)
+    } catch (error) {
+        setLoader(false)
+        alert("Error while completing the operation , Please try again later ")
+        console.log(" error while deleing doc in order page ", error );
+    }
+}
 
     return (
         <div>
+            {loader && <Loader/>}
             <div>
                 <div className="py-5">
                     {/* text  */}
@@ -131,7 +165,10 @@ useEffect(() => {
 
 
                             </tr>
-                                {orderList.map((item , index) => {
+
+                            {/* orders-list */}
+
+                                {list.map((item , index) => {
                                     let product = item.product ;
                                     let addressInfo = item.addressInfo
 
@@ -163,11 +200,11 @@ useEffect(() => {
                                     </td>
 
                                     <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
-                                        {product.amount}
+                                        {product.amount ? product.amount : 1}
                                     </td>
 
                                     <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
-                                        ₹ {product.price * product.amount}
+                                        ₹ { product.amount ? product.price * product.amount : product.price}
                                     </td>
 
                                     <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
@@ -198,12 +235,13 @@ useEffect(() => {
                                         {addressInfo.date}
                                     </td>
 
-                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 text-red-500 cursor-pointer ">
-                                        Delete
-                                    </td>
-                                </tr>
-                                )
-                                })}
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
+                                        <span className='text-red-500 font-bold p-2 bg-pink-50 rounded-lg active:bg-pink-300 active: hover:bg-pink-400 hover:text-blue-50 duration-300'
+                                        onClick={()=> handleDelete(item.id)} >Delete</span>
+                                        </td>
+                                    </tr>
+                                    )
+                                    })}
                         </tbody>
                     </table>
                 </div>

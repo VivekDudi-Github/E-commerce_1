@@ -3,7 +3,6 @@ import ProductDetail from "../../admin/Product_detail";
 import OrderDetail from "../../admin/Order_Detail";
 import User_detail from "../../admin/User_detail";
 import {useSelector} from "react-redux"
-import {useEffect} from "react"
 
 const AdminDashboard = () => {
     const adminData  = useSelector (state => state.user.userData)
