@@ -6,6 +6,7 @@ const initialState = {
     productLists: [],
     adminProductsList: [],
     cartList : [] , 
+    orderList : [] ,
   };
 
 const productSlice = createSlice({
@@ -53,11 +54,23 @@ const productSlice = createSlice({
         } ,
         clear_cart : (state , action) => {
             state.cartList = []
+        } ,
+        addToOrderList : (state , action ) => {
+            state.orderList.push(action.payload)
+        } ,
+        remove_orderList : (state , action) => {
+            const updated_orderList = state.orderList.filter( item => item.id !== action.payload)
+            return { ...state ,cartList: updated_orderList} ;
+        } ,
+        clear_orderList : (state) => {
+            state.orderList = [] ;
         }
+
     }
 })
 
 export const {pushProducts , removeProducts , removeAdminProducts , add_adminProducts , 
-                add_to_cart , remove_cart , cart_drecreamentQuantity , cart_changeQuantity , clear_cart } = productSlice.actions 
+                add_to_cart , remove_cart , cart_drecreamentQuantity , cart_changeQuantity , clear_cart ,
+              addToOrderList , remove_orderList , clear_orderList } = productSlice.actions 
 export default  productSlice  ;
 

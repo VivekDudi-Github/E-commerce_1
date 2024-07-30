@@ -8,7 +8,7 @@ import {useEffect} from "react"
 const AdminDashboard = () => {
     const adminData  = useSelector (state => state.user.userData)
     const productlist = useSelector(state => state.productlist.adminProductsList)
-
+    const orderListLength = useSelector(state => state.productlist.orderList.length)
     
 
     return (
@@ -96,7 +96,7 @@ const AdminDashboard = () => {
                                             <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1" />
                                         </svg>
                                     </div>
-                                    <h2 className="title-font font-medium text-3xl text-pink-400 fonts1" >10</h2>
+                                    <h2 className="title-font font-medium text-3xl text-pink-400 fonts1" >{orderListLength}</h2>
                                     <p className=" text-pink-500  font-bold" >Total Order</p>
                                 </div>
                             </Tab>

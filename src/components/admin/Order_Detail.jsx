@@ -1,20 +1,29 @@
-import { where , QuerySnapshot ,query , collection, orderBy } from "firebase/firestore";
+import { where , onSnapshot ,query , collection, orderBy, limit } from "firebase/firestore";
 import { auth, DB } from "../../firebase/firebase";
 import { useEffect } from "react";
+import { addToOrderList } from "../../redux-store/productSlice";
+import { useDispatch , useSelector } from "react-redux";
+import {newTime} from "./Product_detail"
+
 
 const OrderDetail = () => {
+const dispatch = useDispatch()
+
 const orderRef = collection(DB , "orders")
 const adminId = auth.currentUser.uid
 
-const fetching_Orders = async() => {
-        const q = query(orderRef , orderBy("date") , where("adminId" , "==" , adminId ))
+const orderList  = useSelector( state => state.productlist.orderList)
+console.log(orderList);
+
+const fetching_Orders = () => {
+        const q = query(orderRef , orderBy("date") , where("adminId" , "==" , adminId ) , limit(10))
         try {
-            await QuerySnapshot(q , (orders)=> {
-                console.log(orders.data())
+             onSnapshot(q , (qSnapshot)=> {
+                qSnapshot.forEach((item) => {
+                    const data = item.data() ;
+                    dispatch(addToOrderList({ ...item.data() , id : item.id  , time : newTime(data.time) , addressInfo : {...data.addressInfo , time : newTime(data.addressInfo.time)}}))
+                })
             })
-            // .then( (doc) => {
-            //     console.log(doc)
-            // })
         } catch (error) {
             alert('No orders found')
             console.log( "error while fetching order details", error );
@@ -22,6 +31,7 @@ const fetching_Orders = async() => {
     }
 
 useEffect(() => {
+    if(orderList.length == 0)
     fetching_Orders() ;
 } , [])
 
@@ -121,71 +131,79 @@ useEffect(() => {
 
 
                             </tr>
-                            <tr className="text-pink-300">
-                                <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
-                                    1.
-                                </td>
+                                {orderList.map((item , index) => {
+                                    let product = item.product ;
+                                    let addressInfo = item.addressInfo
 
-                                <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
-                                    {'order Id'}
-                                </td>
+                                    return (
+                                <tr className="text-pink-300" key={item.id}>
 
-                                <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
-                                    <img src="" alt="" />
-                                </td>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
+                                        {index + 1}.
+                                    </td>
 
-                                <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
-                                    {'title'}
-                                </td>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 ">
+                                        {item.id}
+                                    </td>
 
-                                <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
-                                    {'category'}
-                                </td>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
+                                        <img src={product.image_url} alt="product_image" />
+                                    </td>
 
-                                <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
-                                    ₹ {'price'}
-                                </td>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
+                                        {product.title}
+                                    </td>
 
-                                <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
-                                    {'quantity'}
-                                </td>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
+                                        {product.catagory}
+                                    </td>
 
-                                <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
-                                    ₹ {'total price'}
-                                </td>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
+                                        ₹ {product.price}
+                                    </td>
 
-                                <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
-                                    {'status'}
-                                </td>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
+                                        {product.amount}
+                                    </td>
 
-                                <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
-                                    {'name'}
-                                </td>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
+                                        ₹ {product.price * product.amount}
+                                    </td>
 
-                                <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
-                                    {'address'}
-                                </td>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
+                                        {item.status}
+                                    </td>
 
-                                <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
-                                    {'pincode'}
-                                </td>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
+                                        {addressInfo.name}
+                                    </td>
 
-                                <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
-                                    {'phone Number'}
-                                </td>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
+                                        {addressInfo.address}
+                                    </td>
 
-                                <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
-                                    {'email'}
-                                </td>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
+                                        {addressInfo.pincode}
+                                    </td>
 
-                                <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
-                                    {'date'}
-                                </td>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
+                                        {addressInfo.mobileNumber}
+                                    </td>
 
-                                <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 text-red-500 cursor-pointer ">
-                                    Delete
-                                </td>
-                            </tr>
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
+                                        {item.email}
+                                    </td>
+
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 first-letter:uppercase ">
+                                        {addressInfo.date}
+                                    </td>
+
+                                    <td className="h-12 px-6 text-md transition duration-300 border-t border-l first:border-l-0 border-pink-100 stroke-slate-500 text-slate-500 text-red-500 cursor-pointer ">
+                                        Delete
+                                    </td>
+                                </tr>
+                                )
+                                })}
                         </tbody>
                     </table>
                 </div>
